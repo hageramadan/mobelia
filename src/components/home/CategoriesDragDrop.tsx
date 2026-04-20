@@ -98,10 +98,11 @@ export function CategoriesDragDrop() {
   useEffect(() => {
     const updateItemsPerView = () => {
       const width = window.innerWidth;
+      // Large screen (e.g., desktop): 6 items, Small screen (e.g., mobile): 3 items
       if (width < 640) {
-        setItemsPerView(2); // Small screens: 2 items
+        setItemsPerView(3); // Small screens: 3 items
       } else {
-        setItemsPerView(6); // Desktop: 6 items
+        setItemsPerView(6); // Large screens: 6 items
       }
     };
 
@@ -160,10 +161,10 @@ export function CategoriesDragDrop() {
 
   const visibleCategories = initialCategories.slice(currentIndex, currentIndex + itemsPerView);
 
-  // Responsive grid classes
+  // Responsive grid classes: 3 columns on small screens, 6 columns on large screens
   const getGridClasses = () => {
-    if (itemsPerView === 2) return "grid-cols-2";
-    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6";
+    if (itemsPerView === 3) return "grid-cols-3";
+    return "grid-cols-3 md:grid-cols-6";
   };
 
   return (
@@ -201,7 +202,7 @@ export function CategoriesDragDrop() {
                 style={{ border: '1px solid #e2e8f0' }}
                 aria-label="التالي"
               >
-                <ChevronRight className="h-4 w-4 md:h-5 md:w-5" style={{ color: '#ffffff' }} />
+                <ChevronRight className="h-4 w-5 md:h-5 md:w-5" style={{ color: '#ffffff' }} />
               </button>
             </>
           )}
@@ -218,7 +219,7 @@ export function CategoriesDragDrop() {
                 isTransitioning ? 'opacity-50' : 'opacity-100'
               }`}
             >
-              <div className={`grid ${getGridClasses()} gap-3 md:gap-4 lg:gap-6`}>
+              <div className={`grid ${getGridClasses()} gap-4`} style={{ gap: '16px' }}>
                 {visibleCategories.map((category) => (
                   <div
                     key={category.id}
@@ -226,33 +227,45 @@ export function CategoriesDragDrop() {
                   >
                     <Link href={category.href}>
                       <div 
-                        className="bg-white border-2 border-gray-200 transition-all duration-300 hover:shadow-xl overflow-hidden cursor-pointer w-full"
+                        className="py-[16px] px-[12px] md:py-[24px] md:px-[12px] bg-white border border-gray-200 transition-all duration-300 hover:shadow-xl overflow-hidden cursor-pointer"
                         style={{ 
-                          borderRadius: '4px',
+                        
+                          width: '100%',
                         }}
                       >
-                        {/* Image Container - Fixed height issue */}
+                        {/* Image Container with responsive dimensions */}
                         <div 
-                          className="relative w-full"
+                          className="relative mx-auto"
                           style={{ 
-                            aspectRatio: '1 / 1',
-                            width: '100%'
+                            // Large screen dimensions
+                            width: 'min(100%, 198.33px)',
+                            height: 'min(100%, 236px)',
+                            // Small screen dimensions override via media query inline style
                           }}
                         >
-                          <Image
-                            src={category.image}
-                            alt={category.name}
-                            fill
-                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                            style={{ objectFit: 'cover' }}
-                          />
+                          {/* Responsive sizing using picture/srcSet approach via CSS classes */}
+                          <div className="w-full h-full">
+                            <Image
+                              src={category.image}
+                              alt={category.name}
+                              width={198}
+                              height={236}
+                              
+                              className="object-cover custom-width-192 group-hover:scale-105 transition-transform duration-500 w-full h-full"
+                              style={{ 
+                                objectFit: 'cover',
+                                // Small screen dimensions
+                               
+                              }}
+                              sizes="(max-width: 640px) 192px, 192px"
+                            />
+                          </div>
                         </div>
 
                         {/* Category Name */}
-                        <div className="p-2 md:p-3 text-center">
+                        <div className="text-center mt-4">
                           <h3 
-                            className="text-xs sm:text-sm md:text-base font-semibold line-clamp-2"
+                            className="text-xs sm:text-sm md:text-base font-semibold line-clamp-1"
                             style={{ color: '#112B40' }}
                           >
                             {category.name}
@@ -267,7 +280,7 @@ export function CategoriesDragDrop() {
           </div>
         </div>
 
-        {/* Progress Indicator */}
+        {/* Progress Indicator - Optional, uncomment if needed */}
         {/* {maxIndex > 0 && (
           <div className="flex justify-center gap-1.5 md:gap-2 mt-6 md:mt-8">
             {Array.from({ length: maxIndex + 1 }).map((_, index) => (

@@ -7,3 +7,12 @@
     @apply container mx-auto px-4 md:px-6 lg:px-8;
   }
 }
+
+
+
+ @media (maxWidth: 640px){
+.custom-width-192{
+  width: 193px;
+  height: 192px;
+}
+ }
