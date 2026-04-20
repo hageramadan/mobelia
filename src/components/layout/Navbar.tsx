@@ -236,7 +236,7 @@ export function Navbar() {
               aria-label="favorites"
               style={{ color: '#195073' }}
             >
-              <Link href="/favorites">
+              <Link href="/favorites" >
               {/* {favoritesCount > 0 && (
                   <span className="  text-[12px] text-[#195073] me-1 font-bold " >
                     {favoritesCount}
@@ -258,7 +258,7 @@ export function Navbar() {
               className="relative hover:bg-gray-100"
               style={{ color: '#195073' }}
             >
-              <Link href="/cart">
+              <Link href="/cart" >
                <span className="  text-[12px] text-[#195073] me-1 font-bold " >
                     1
                   </span>
@@ -325,9 +325,9 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <div className="relative">
-                   <span className="  text-[12px] text-[#195073] me-1 font-bold " >
+                   {/* <span className="  text-[12px] text-[#195073] me-1 font-bold " >
                     1
-                  </span>
+                  </span> */}
                   <Heart className="h-5 w-5" style={{ color: '#195073' }} />
                   {/* {favoritesCount > 0 && (
                     <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#ef4444' }}>
@@ -345,11 +345,11 @@ export function Navbar() {
               >
                 <div className="relative">
                   <ShoppingCart className="h-5 w-5" style={{ color: '#195073' }} />
-                  {cartCount > 0 && (
+                  {/* {cartCount > 0 && (
                     <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#23A6F0' }}>
                       {cartCount}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <span className="text-xs" style={{ color: '#112B40' }}>السلة</span>
               </Link>
