@@ -13,18 +13,18 @@ import Image from "next/image";
 
 const navLinks = [
   { name: "الرئيسية", href: "/" },
-  { name: "الفئات", href: "/categories", hasDropdown: true },
-  { name: "تواصل معنا", href: "/contact" },
+  { name: "الفئات", href: "#", hasDropdown: true },
+  { name: "تواصل معنا", href: "##" },
 ];
 
 // Categories dropdown items
 const categories = [
-  { name: "إلكترونيات", href: "/categories/electronics" },
-  { name: "ملابس", href: "/categories/clothing" },
-  { name: "أحذية", href: "/categories/shoes" },
-  { name: "مستحضرات تجميل", href: "/categories/beauty" },
-  { name: "منزل ومطبخ", href: "/categories/home" },
-  { name: "رياضة", href: "/categories/sports" },
+  { name: "إلكترونيات", href: "/"  , id: 1},
+  { name: "ملابس", href: "/" , id: 2 },
+  { name: "أحذية", href: "/" , id: 3 },
+  { name: "مستحضرات تجميل", href: "/" , id: 4 },
+  { name: "منزل ومطبخ", href: "/" , id: 5 },
+  { name: "رياضة", href: "/" , id: 6 },
 ];
 
 export function Navbar() {
@@ -108,21 +108,21 @@ export function Navbar() {
           <Link 
             href="/" 
             className="text-[32px] font-bold transition-colors shrink-0"
-            style={{ color: '#23A6F0' }}
+            style={{ color: '#FF7700' }}
           >
             Logo
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6 flex-1 justify-center">
-            {navLinks.map((link) => (
+          <nav className="hidden md:flex items-center gap-6 flex-1 justify-center text-[#0A0500]">
+            {navLinks.map((link,index) => (
               link.hasDropdown ? (
-                <div key={link.href} className="relative" ref={categoriesRef}>
+                <div key={index} className="relative" ref={categoriesRef}>
                   <button
                   aria-label="search"
-                    className="flex items-center gap-1 text-[16px] transition-colors hover:text-[#23A6F0]"
+                    className="flex items-center gap-1 text-[16px] transition-colors hover:text-[#FF7700]"
                     style={{ 
-                      color: pathname.startsWith('/categories') ? '#23A6F0' : '#112B40',
+                      color: pathname.startsWith('/categories') ? '#FF7700' : '#112B40',
                       fontWeight: pathname.startsWith('/categories') ? '700' : '400'
                     }}
                     onClick={() => setShowCategoriesDropdown(!showCategoriesDropdown)}
@@ -142,12 +142,12 @@ export function Navbar() {
                       <div className="py-2">
                         {categories.map((category) => (
                           <Link
-                            key={category.href}
+                            key={category.id}
                             href={category.href}
                             className="block px-4 py-2 text-[14px] transition-colors hover:bg-gray-50"
                             style={{ color: '#112B40' }}
                             onClick={() => setShowCategoriesDropdown(false)}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#23A6F0'}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
                             onMouseLeave={(e) => e.currentTarget.style.color = '#112B40'}
                           >
                             {category.name}
@@ -161,9 +161,9 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-[16px] transition-colors hover:text-[#23A6F0]"
+                  className="text-[16px] transition-colors hover:text-[#FF7700]"
                   style={{ 
-                    color: pathname === link.href ? '#23A6F0' : '#112B40',
+                    color: pathname === link.href ? '#FF7700' : '#112B40',
                     fontWeight: pathname === link.href ? '700' : '400'
                   }}
                 >
@@ -183,7 +183,7 @@ export function Navbar() {
                 aria-label="search"
                 onClick={() => setShowSearchInput(!showSearchInput)}
                 className="relative z-10 hover:bg-gray-100"
-                style={{ color: '#195073' }}
+                style={{ color: '#FF7700' }}
               >
                 <Search className="h-5 w-5" />
               </Button>
@@ -201,8 +201,8 @@ export function Navbar() {
                           placeholder="ابحث عن منتج..."
                           className="w-full h-11 pr-9 border-0 bg-white focus-visible:ring-1 focus-visible:ring-offset-0"
                           style={{ 
-                            color: '#195073',
-                            '--tw-ring-color': '#23A6F0'
+                            color: '#FF7700',
+                            '--tw-ring-color': '#FF7700'
                           } as React.CSSProperties}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
@@ -214,7 +214,7 @@ export function Navbar() {
                             onClick={() => setSearchQuery("")}
                             className="absolute left-3 top-1/2 -translate-y-1/2 transition-colors"
                             style={{ color: '#94a3b8' }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#195073'}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
                             onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
                           >
                             <X className="h-4 w-4" />
@@ -234,15 +234,15 @@ export function Navbar() {
               asChild 
               className="relative hover:bg-gray-100"
               aria-label="favorites"
-              style={{ color: '#195073' }}
+              style={{ color: '#FF7700' }}
             >
-              <Link href="/favorites" >
+              <Link href="/" >
               {/* {favoritesCount > 0 && (
-                  <span className="  text-[12px] text-[#195073] me-1 font-bold " >
+                  <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
                     {favoritesCount}
                   </span>
                 )} */}
-                <span className="  text-[12px] text-[#195073] me-1 font-bold " >
+                <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
                     1
                   </span>
                 <Heart className="h-[20px] w-[20px]" />
@@ -256,15 +256,15 @@ export function Navbar() {
               size="icon" 
               asChild 
               className="relative hover:bg-gray-100"
-              style={{ color: '#195073' }}
+              style={{ color: '#FF7700' }}
             >
-              <Link href="/cart" >
-               <span className="  text-[12px] text-[#195073] me-1 font-bold " >
+              <Link href="/" >
+               <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
                     1
                   </span>
                 <ShoppingCart className="h-5 w-5" />
                 {/* {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#23A6F0' }}>
+                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#FF7700' }}>
                     {cartCount}
                   </span>
                 )} */}
@@ -276,9 +276,9 @@ export function Navbar() {
               asChild 
               aria-label="search"
               className="hidden sm:inline-flex hover:bg-gray-100 gap-2"
-              style={{ color: '#195073' }}
+              style={{ color: '#FF7700' }}
             >
-              <Link href="/auth/login">
+              <Link href="/">
                 <PiUserBold  className="h-5 w-5" />
                 <span className="text-[14px] font-bold">تسجيل دخول</span>
               </Link>
@@ -291,7 +291,7 @@ export function Navbar() {
             size="icon"
             aria-label="show menu"
             className="md:hidden hover:bg-gray-100"
-            style={{ color: '#195073' }}
+            style={{ color: '#FF7700' }}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Image src="/images/Menu.png" alt="Menu" className="w-[24px] h-[24x]" width={120} height={120} />}
@@ -320,15 +320,15 @@ export function Navbar() {
             {/* Favorites and Cart in mobile menu */}
             <div className="flex items-center justify-around px-3 py-2 border-b border-gray-100">
               <Link 
-                href="/favorites" 
+                href="/" 
                 className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <div className="relative">
-                   {/* <span className="  text-[12px] text-[#195073] me-1 font-bold " >
+                   {/* <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
                     1
                   </span> */}
-                  <Heart className="h-5 w-5" style={{ color: '#195073' }} />
+                  <Heart className="h-5 w-5" style={{ color: '#FF7700' }} />
                   {/* {favoritesCount > 0 && (
                     <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#ef4444' }}>
                       {favoritesCount}
@@ -339,14 +339,14 @@ export function Navbar() {
               </Link>
               
               <Link 
-                href="/cart" 
+                href="/" 
                 className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <div className="relative">
-                  <ShoppingCart className="h-5 w-5" style={{ color: '#195073' }} />
+                  <ShoppingCart className="h-5 w-5" style={{ color: '#FF7700' }} />
                   {/* {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#23A6F0' }}>
+                    <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#FF7700' }}>
                       {cartCount}
                     </span>
                   )} */}
@@ -355,11 +355,11 @@ export function Navbar() {
               </Link>
 
               <Link 
-                href="/auth/login" 
+                href="/" 
                 className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <User className="h-5 w-5" style={{ color: '#195073' }} />
+                <User className="h-5 w-5" style={{ color: '#FF7700' }} />
                 <span className="text-xs" style={{ color: '#112B40' }}>تسجيل دخول</span>
               </Link>
             </div>
@@ -383,14 +383,14 @@ export function Navbar() {
                         {categories.map((category) => (
                           <Link
                             key={category.href}
-                            href={category.href}
+                            href={'/'}
                             className="block px-3 py-2 text-[14px] rounded-md transition-colors hover:bg-gray-50"
                             style={{ color: '#112B40' }}
                             onClick={() => {
                               setMobileMenuOpen(false);
                               setShowCategoriesDropdown(false);
                             }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#23A6F0'}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
                             onMouseLeave={(e) => e.currentTarget.style.color = '#112B40'}
                           >
                             {category.name}
@@ -406,7 +406,7 @@ export function Navbar() {
                     className="px-3 py-3 text-[16px] font-medium rounded-md transition-colors hover:bg-gray-50"
                     style={{ color: '#112B40' }}
                     onClick={() => setMobileMenuOpen(false)}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#23A6F0'}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
                     onMouseLeave={(e) => e.currentTarget.style.color = '#112B40'}
                   >
                     {link.name}

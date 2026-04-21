@@ -73,7 +73,7 @@ export default function ProductsPage() {
       {filteredProducts.length > 0 ? (
         <ProductsGrid />
       ) : (
-        <div className="text-center py-12">
+        <div className="text-center py-2 md:py-12">
           <p className="text-muted-foreground">لا توجد منتجات تطابق البحث</p>
           <Button variant="link" onClick={clearFilters} aria-label="delete">
             مسح جميع الفلاتر

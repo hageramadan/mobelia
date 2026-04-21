@@ -1,4 +1,4 @@
-import { AdsHome } from "@/components/home/AdsHome";
+
 import { BestProducts } from "@/components/home/BestProducts";
 import { CategoriesDragDrop } from "@/components/home/CategoriesDragDrop";
 import { Hero } from "@/components/home/HeroCover";
@@ -14,7 +14,6 @@ export default function Home() {
     <CategoriesDragDrop />
    <LatestProducts />
    <BestProducts/>
-   <AdsHome/>
    <BestProducts/>
    <Footer />
    </div>
