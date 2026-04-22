@@ -9,7 +9,7 @@ export function Footer() {
     <footer className="border-t mt-auto bg-[#141718] text-white pt-6 md:pt-10">
       <div className="container mx-auto px-4 py-8 md:py-12">
         {/* القسم العلوي - الشبكة الرئيسية */}
-        <div className="flex flex-wrap items-center justify-center md:justify-between gap-8 mb-8">
+        <div className="flex flex-wrap md:flex-row flex-col items-center justify-center md:justify-between gap-8 mb-8">
           
           {/* القسم 1: الشعار والوصف */}
           <div className="space-y-4">
