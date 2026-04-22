@@ -71,7 +71,7 @@ const latestProducts: Product[] = [
  
  
 ];
-
+const lastProduct: Product = {id:"111",name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.", price: 360, image: "/images/products/pro6.png", href: "/"};
 export function LatestProducts() {
   const [displayCount, setDisplayCount] = useState(8);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,8 +118,13 @@ export function LatestProducts() {
             </div>
           ))}
           </div>
+         
+           <div className="sm:hidden flex flex-col gap-6  ms-8">
+            <ProductCard {...lastProduct} />
+          <ProductCard {...lastProduct} />
+          </div>
           {/* Sale Banner */}
-          <div className="col-span-3 pt-6 md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-end  gap-4 ">
+          <div className="ms-4 sm:mx-0 pt-6 px-2 w-full  md:col-span-1   bg-[#FBEDDE] flex flex-col items-center justify-end  gap-4 ">
             <div className="text-center gap-4 flex flex-col items-center justify-center">
               <p className="text-[#BE4646] text-[14px] font-bold">لفتره محدوده</p>
               <p className="text-[#191C1F] text-[24px] md:text-[32px] font-bold">خصم 32%</p>
@@ -156,6 +161,8 @@ export function LatestProducts() {
             </div>
             
           </div>
+        
+
         </div>
 
         {/* Loading State */}
