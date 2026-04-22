@@ -32,7 +32,7 @@ export function Footer() {
 
         </div>
 
-        {/* القسم السفلي - الحقوق ووسائل التواصل */}
+        {/* القسم - الحقوق ووسائل التواصل */}
         <div className="border-t border-white/20 pt-6 md:pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
          <div className="flex flex-wrap justify-center gap-7">
