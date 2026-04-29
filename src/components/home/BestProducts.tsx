@@ -1,119 +1,152 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { ProductCard } from "../products/ProductCard";
 import { Button } from "../ui/button";
+import { getMostSellingProducts, Product } from "@/services/api";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  href: string;
-  originalPrice?: number;
-  discount?: number;
-}
+// تحويل بيانات API إلى الصيغة المطلوبة لـ ProductCard
+const formatProductForCard = (product: Product) => {
+  // حساب نسبة الخصم إذا وجد
+  let discountPercentage = undefined;
+  if (product.pricing.has_discount && product.pricing.price_after_discount) {
+    discountPercentage = Math.round(
+      ((product.pricing.price - product.pricing.price_after_discount) / product.pricing.price) * 100
+    );
+  }
 
-const latestProducts: Product[] = [
-  {
-    id: "1",
-    name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    originalPrice: 35000,
-    discount: 28,
-    image: "/images/products/pro1.png",
-    href: "/",
-  },
-  {
-    id: "2",
-   name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    image: "/images/products/pro2.png",
-    href: "/",
-  },
-  {
-    id: "3",
-   name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    originalPrice: 360,
-    discount: 25,
-    image: "/images/products/pro3.png",
-    href: "/",
-  },
-  {
-    id: "4",
-  name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    image: "/images/products/pro4.png",
-    href: "/",
-  },
-  {
-    id: "5",
-  name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    originalPrice: 45000,
-    discount: 29,
-    image: "/images/products/pro5.png",
-    href: "/",
-  },
-  {
-    id: "6",
-   name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    image: "/images/products/pro6.png",
-    href: "/",
-  },
-  {
-    id: "13",
-   name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    originalPrice: 360,
-    discount: 25,
-    image: "/images/products/pro3.png",
-    href: "/",
-  },
-  {
-    id: "14",
-  name: "Lorem ipsum dolor sit amet consectetur. Accumsan massa mauris nunc lacus.",
-    price: 360,
-    image: "/images/products/pro4.png",
-    href: "/",
-  },
- 
- 
-
-];
+  return {
+    id: product.id.toString(),
+    name: product.name,
+    price: product.pricing.final_price,
+    originalPrice: product.pricing.has_discount ? product.pricing.price : undefined,
+    discount: discountPercentage,
+    image: `https://alsas.admin.t-carts.com${product.images[0]}` || "/images/placeholder.jpg",
+    href: `/product/${product.id}`,
+  };
+};
 
 export function BestProducts() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [displayCount, setDisplayCount] = useState(8);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // جلب البيانات من API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await getMostSellingProducts();
+        setProducts(data);
+        setError(null);
+      } catch (err) {
+        setError("حدث خطأ في تحميل المنتجات");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleLoadMore = () => {
-    setIsLoading(true);
-    // Simulate loading delay
+    setIsLoadingMore(true);
     setTimeout(() => {
-      setDisplayCount((prev) => Math.min(prev + 6, latestProducts.length));
-      setIsLoading(false);
+      setDisplayCount((prev) => Math.min(prev + 6, products.length));
+      setIsLoadingMore(false);
     }, 500);
   };
 
-  const visibleProducts = latestProducts.slice(0, displayCount);
-  const hasMore = displayCount < latestProducts.length;
+  // تحويل المنتجات إلى الصيغة المطلوبة
+  const formattedProducts = products.map(formatProductForCard);
+  const visibleProducts = formattedProducts.slice(0, displayCount);
+  const hasMore = displayCount < formattedProducts.length;
+
+  if (loading) {
+    return (
+      <section className="py-2 md:py-12 bg-white">
+        <div className="container-custom">
+          {/* Header */}
+          <div className="mb-10 flex justify-between">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: '#112B40' }}>
+              الأكثر طلبا
+            </h2>
+          </div>
+          
+          {/* Loading Spinner */}
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#FF7700]"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-2 md:py-12 bg-white">
+        <div className="container-custom">
+          {/* Header */}
+          <div className="mb-10 flex justify-between">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: '#112B40' }}>
+              الأكثر طلبا
+            </h2>
+          </div>
+          
+          {/* Error Message */}
+          <div className="flex flex-col justify-center items-center py-20 text-center">
+            <p className="text-red-500 mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-[#FF7700] text-white rounded-md"
+            >
+              إعادة المحاولة
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="py-2 md:py-12 bg-white">
+        <div className="container-custom">
+          {/* Header */}
+          <div className="mb-10 flex justify-between">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: '#112B40' }}>
+              الأكثر طلبا
+            </h2>
+            <Link href="/products" className="text-[#FF7700] hover:underline">
+              عرض المزيد
+            </Link>
+          </div>
+          
+          {/* Empty State */}
+          <div className="text-center py-20">
+            <p className="text-gray-500">لا توجد منتجات حالياً</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-2 md:py-12 bg-white">
       <div className="container-custom">
         {/* Header */}
-        <div className=" mb-10 flex  justify-between">
-          <h2 className="text-2xl md:text-3xl  font-bold mb-3" style={{ color: '#112B40' }}>
-           الأكثر طلبا
+        <div className="mb-10 flex justify-between items-center">
+          <h2 className="text-2xl md:text-3xl font-bold" style={{ color: '#112B40' }}>
+            الأكثر طلبا
           </h2>
-        <p className="text-[#FF7700]">
-          عرض المزيد
-        </p>
-          
+          <Link href="/products/most-selling" className="text-[#FF7700] hover:underline">
+            عرض المزيد
+          </Link>
         </div>
 
         {/* Products Grid */}
@@ -132,15 +165,15 @@ export function BestProducts() {
           ))}
         </div>
 
-        {/* Loading State */}
-        {isLoading && (
+        {/* Loading State for Load More */}
+        {isLoadingMore && (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7700]"></div>
           </div>
         )}
 
-        {/* View More Button */}
-        {/* {hasMore && !isLoading && (
+        {/* View More Button (اختياري - يمكن تفعيله إذا أردت) */}
+        {hasMore && !isLoadingMore && (
           <div className="text-center">
             <Button
               onClick={handleLoadMore}
@@ -156,22 +189,20 @@ export function BestProducts() {
               <ChevronLeft className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
           </div>
-        )} */}
+        )}
 
-        {/* View All Link */}
-        {/* {!hasMore && displayCount > 0 && (
+        {/* View All Link (يظهر عندما لا يكون هناك زر عرض المزيد) */}
+        {/* {!hasMore && products.length > 0 && (
           <div className="text-center">
             <Link
-              href="/products"
-              className="inline-flex items-center gap-2 text-[#FF7700] hover:text-[#1a8fd0] font-semibold transition-colors duration-300"
+              href="/products/most-selling"
+              className="inline-flex items-center gap-2 text-[#FF7700] hover:text-[#FF7700]/80 font-semibold transition-colors duration-300"
             >
               عرض جميع المنتجات
               <ChevronLeft className="h-5 w-5" />
             </Link>
           </div>
         )} */}
-
-
       </div>
     </section>
   );

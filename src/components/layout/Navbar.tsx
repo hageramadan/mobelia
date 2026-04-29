@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Heart, ShoppingCart, User, Search, Menu, X, ChevronDown } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
-import { PiUserBold  } from "react-icons/pi";
-// import { useFavorites } from "@/contexts/FavoritesContext";
+import { PiUserBold } from "react-icons/pi";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { getCategories, Category } from "@/services/api";
 
 const navLinks = [
   { name: "الرئيسية", href: "/" },
@@ -17,27 +17,36 @@ const navLinks = [
   { name: "تواصل معنا", href: "##" },
 ];
 
-// Categories dropdown items
-const categories = [
-  { name: "إلكترونيات", href: "/"  , id: 1},
-  { name: "ملابس", href: "/" , id: 2 },
-  { name: "أحذية", href: "/" , id: 3 },
-  { name: "مستحضرات تجميل", href: "/" , id: 4 },
-  { name: "منزل ومطبخ", href: "/" , id: 5 },
-  { name: "رياضة", href: "/" , id: 6 },
-];
-
 export function Navbar() {
   const pathname = usePathname();
   const { cartCount } = useCart();
-  // const { favoritesCount } = useFavorites();
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [showMobileCategoriesDropdown, setShowMobileCategoriesDropdown] = useState(false); // فصل حالة الموبايل
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
+
+  // جلب الفئات من API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const data = await getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error('Failed to fetch categories for navbar:', error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Focus on search input when shown
   useEffect(() => {
@@ -69,7 +78,7 @@ export function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showSearchInput]);
 
-  // Close categories dropdown when clicking outside
+  // Close categories dropdown when clicking outside (Desktop only)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (showCategoriesDropdown && categoriesRef.current && !categoriesRef.current.contains(event.target as Node)) {
@@ -91,11 +100,20 @@ export function Navbar() {
       if (e.key === 'Escape' && showCategoriesDropdown) {
         setShowCategoriesDropdown(false);
       }
+      if (e.key === 'Escape' && showMobileCategoriesDropdown) {
+        setShowMobileCategoriesDropdown(false);
+      }
     };
     
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [showSearchInput, showCategoriesDropdown]);
+  }, [showSearchInput, showCategoriesDropdown, showMobileCategoriesDropdown]);
+
+  // منع انتشار الحدث عند النقر على زر الفئات في الموبايل
+  const handleMobileCategoriesClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMobileCategoriesDropdown(!showMobileCategoriesDropdown);
+  };
 
   return (
     <header 
@@ -115,11 +133,11 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6 flex-1 justify-center text-[#0A0500]">
-            {navLinks.map((link,index) => (
+            {navLinks.map((link, index) => (
               link.hasDropdown ? (
                 <div key={index} className="relative" ref={categoriesRef}>
                   <button
-                  aria-label="search"
+                    aria-label="categories"
                     className="flex items-center gap-1 text-[16px] transition-colors hover:text-[#FF7700]"
                     style={{ 
                       color: pathname.startsWith('/categories') ? '#FF7700' : '#112B40',
@@ -132,7 +150,7 @@ export function Navbar() {
                     <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${showCategoriesDropdown ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* Categories Dropdown */}
+                  {/* Categories Dropdown - Desktop */}
                   {showCategoriesDropdown && (
                     <div 
                       className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg border shadow-xl z-50 animate-in fade-in zoom-in-95 duration-200"
@@ -140,19 +158,25 @@ export function Navbar() {
                       onMouseLeave={() => setShowCategoriesDropdown(false)}
                     >
                       <div className="py-2">
-                        {categories.map((category) => (
-                          <Link
-                            key={category.id}
-                            href={category.href}
-                            className="block px-4 py-2 text-[14px] transition-colors hover:bg-gray-50"
-                            style={{ color: '#112B40' }}
-                            onClick={() => setShowCategoriesDropdown(false)}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = '#112B40'}
-                          >
-                            {category.name}
-                          </Link>
-                        ))}
+                        {loadingCategories ? (
+                          <div className="px-4 py-2 text-center">
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#FF7700] mx-auto"></div>
+                          </div>
+                        ) : (
+                          categories.map((category) => (
+                            <Link
+                              key={category.id}
+                              href={`/category/${category.id}`}
+                              className="block px-4 py-2 text-[14px] transition-colors hover:bg-gray-50"
+                              style={{ color: '#112B40' }}
+                              onClick={() => setShowCategoriesDropdown(false)}
+                              onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
+                              onMouseLeave={(e) => e.currentTarget.style.color = '#112B40'}
+                            >
+                              {category.name}
+                            </Link>
+                          ))
+                        )}
                       </div>
                     </div>
                   )}
@@ -173,7 +197,7 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Actions - Desktop فقط، في الموبايل تختفي */}
+          {/* Actions - Desktop */}
           <div className="hidden md:flex items-center gap-1 shrink-0">
             {/* Search Button & Overlay Input */}
             <div className="relative" ref={searchContainerRef}>
@@ -193,7 +217,7 @@ export function Navbar() {
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-screen max-w-md px-4">
                   <div className="relative">
                     <form onSubmit={handleSearch}>
-                      <div className="relative bg-transparent " >
+                      <div className="relative bg-transparent">
                         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#94a3b8' }} />
                         <Input
                           ref={searchInputRef}
@@ -210,7 +234,7 @@ export function Navbar() {
                         {searchQuery && (
                           <button
                             type="button"
-                            aria-label="search"
+                            aria-label="clear search"
                             onClick={() => setSearchQuery("")}
                             className="absolute left-3 top-1/2 -translate-y-1/2 transition-colors"
                             style={{ color: '#94a3b8' }}
@@ -236,17 +260,9 @@ export function Navbar() {
               aria-label="favorites"
               style={{ color: '#FF7700' }}
             >
-              <Link href="/" >
-              {/* {favoritesCount > 0 && (
-                  <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
-                    {favoritesCount}
-                  </span>
-                )} */}
-                <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
-                    1
-                  </span>
+              <Link href="/">
+                <span className="text-[12px] text-[#FF7700] me-1 font-bold">1</span>
                 <Heart className="h-[20px] w-[20px]" />
-                
               </Link>
             </Button>
 
@@ -258,47 +274,43 @@ export function Navbar() {
               className="relative hover:bg-gray-100"
               style={{ color: '#FF7700' }}
             >
-              <Link href="/" >
-               <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
-                    1
-                  </span>
+              <Link href="/">
+                <span className="text-[12px] text-[#FF7700] me-1 font-bold">1</span>
                 <ShoppingCart className="h-5 w-5" />
-                {/* {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#FF7700' }}>
-                    {cartCount}
-                  </span>
-                )} */}
               </Link>
             </Button>
 
             <Button 
               variant="ghost" 
               asChild 
-              aria-label="search"
+              aria-label="login"
               className="hidden sm:inline-flex hover:bg-gray-100 gap-2"
               style={{ color: '#FF7700' }}
             >
               <Link href="/">
-                <PiUserBold  className="h-5 w-5" />
+                <PiUserBold className="h-5 w-5" />
                 <span className="text-[14px] font-bold">تسجيل دخول</span>
               </Link>
             </Button>
           </div>
 
-          {/* Mobile Menu Button - يظهر فقط في الموبايل */}
+          {/* Mobile Menu Button */}
           <Button
             variant="ghost"
             size="icon"
             aria-label="show menu"
             className="md:hidden hover:bg-gray-100"
             style={{ color: '#FF7700' }}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => {
+              setMobileMenuOpen(!mobileMenuOpen);
+              setShowMobileCategoriesDropdown(false); // إغلاق قائمة الفئات عند إغلاق القائمة
+            }}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Image src="/images/Menu.png" alt="Menu" className="w-[24px] h-[24x]" width={120} height={120} />}
           </Button>
         </div>
 
-        {/* Mobile Menu - يحتوي على البحث والمفضلة والسلة */}
+        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t py-4 space-y-4 animate-in slide-in-from-top-2 duration-200" style={{ borderColor: '#e2e8f0' }}>
             {/* Search in mobile menu */}
@@ -325,15 +337,7 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <div className="relative">
-                   {/* <span className="  text-[12px] text-[#FF7700] me-1 font-bold " >
-                    1
-                  </span> */}
                   <Heart className="h-5 w-5" style={{ color: '#FF7700' }} />
-                  {/* {favoritesCount > 0 && (
-                    <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#ef4444' }}>
-                      {favoritesCount}
-                    </span>
-                  )} */}
                 </div>
                 <span className="text-xs" style={{ color: '#112B40' }}>المفضلة</span>
               </Link>
@@ -345,11 +349,6 @@ export function Navbar() {
               >
                 <div className="relative">
                   <ShoppingCart className="h-5 w-5" style={{ color: '#FF7700' }} />
-                  {/* {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full text-[10px] text-white flex items-center justify-center" style={{ backgroundColor: '#FF7700' }}>
-                      {cartCount}
-                    </span>
-                  )} */}
                 </div>
                 <span className="text-xs" style={{ color: '#112B40' }}>السلة</span>
               </Link>
@@ -364,38 +363,44 @@ export function Navbar() {
               </Link>
             </div>
 
-            {/* Navigation Links in mobile menu */}
+            {/* Navigation Links in mobile menu - Fixed */}
             <div className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 link.hasDropdown ? (
                   <div key={link.href} className="space-y-2">
                     <button
-                    aria-label="search"
+                      aria-label="categories"
                       className="px-3 py-3 text-[16px] font-medium rounded-md transition-colors hover:bg-gray-50 flex items-center justify-between w-full"
                       style={{ color: '#112B40' }}
-                      onClick={() => setShowCategoriesDropdown(!showCategoriesDropdown)}
+                      onClick={handleMobileCategoriesClick}
                     >
                       {link.name}
-                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${showCategoriesDropdown ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${showMobileCategoriesDropdown ? 'rotate-180' : ''}`} />
                     </button>
-                    {showCategoriesDropdown && (
+                    {showMobileCategoriesDropdown && (
                       <div className="mr-4 space-y-1">
-                        {categories.map((category) => (
-                          <Link
-                            key={category.href}
-                            href={'/'}
-                            className="block px-3 py-2 text-[14px] rounded-md transition-colors hover:bg-gray-50"
-                            style={{ color: '#112B40' }}
-                            onClick={() => {
-                              setMobileMenuOpen(false);
-                              setShowCategoriesDropdown(false);
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = '#112B40'}
-                          >
-                            {category.name}
-                          </Link>
-                        ))}
+                        {loadingCategories ? (
+                          <div className="px-3 py-2 text-center">
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#FF7700] mx-auto"></div>
+                          </div>
+                        ) : (
+                          categories.map((category) => (
+                            <Link
+                              key={category.id}
+                              href={`/category/${category.id}`}
+                              className="block px-3 py-2 text-[14px] rounded-md transition-colors hover:bg-gray-50"
+                              style={{ color: '#112B40' }}
+                              onClick={() => {
+                                setMobileMenuOpen(false);
+                                setShowMobileCategoriesDropdown(false);
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.color = '#FF7700'}
+                              onMouseLeave={(e) => e.currentTarget.style.color = '#112B40'}
+                            >
+                              {category.name}
+                            </Link>
+                          ))
+                        )}
                       </div>
                     )}
                   </div>
