@@ -403,13 +403,13 @@ useEffect(() => {
               <LoadingSpinner size="lg" text={t("products.loading")} />
             ) : products.length > 0 ? (
               <>
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-6">
                   {products.map((product) => {
                     const cardData = transformProductForCard(product);
                     return (
                       <div
                         key={cardData.id}
-                        className="flex justify-center w-full"
+                        className="flex justify-center w-full mb-3"
                       >
                         <ProductCard
                           id={cardData.id}

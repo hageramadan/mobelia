@@ -297,12 +297,12 @@ export function LatestProducts({ onLoad }: LatestProductsProps) {
         )}
 
         {/* ✅ Products Grid - نفس تصميم الكود الأول */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-6 justify-items-center mb-10">
-          <div className="col-span-3 grid grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-6 justify-items-center mb-10">
+          <div className="col-span-3 grid grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-6 justify-items-center">
             {visibleProducts.map((product, index) => (
               <div
                 key={product.id}
-                className="animate-in fade-in zoom-in duration-500"
+                className="animate-in fade-in zoom-in duration-500 mb-3"
                 style={{ 
                   animationFillMode: 'both',
                   animationDelay: `${index * 100}ms`

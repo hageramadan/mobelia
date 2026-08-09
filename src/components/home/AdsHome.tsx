@@ -177,7 +177,7 @@ export function AdsHome({ onLoad }: AdsHomeProps) {
   // عرض شاشة تحميل بنفس تصميم الكود الأول
   if (loading) {
     return (
-      <div className="ms-4 sm:mx-0 pt-6 px-2 w-full md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-center gap-4 min-h-[400px]">
+      <div className="ms-4 sm:mx-0 pt-2 lg:pt-6 px-2 w-full md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-center gap-4 min-h-[400px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7700]"></div>
       </div>
     );
@@ -205,8 +205,8 @@ export function AdsHome({ onLoad }: AdsHomeProps) {
   const hasTimer = timeLeft.days > 0 || timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0;
 
   return (
-    <div className="ms-4 sm:mx-0 pt-6  w-full md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-center gap-4">
-      <div className="text-center gap-4 flex flex-col items-center justify-center w-full">
+    <div className="ms-4 sm:mx-0 pt-2 lg:pt-6 w-full md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-center gap-2 lg:gap-4">
+      <div className="text-center gap-2 lg:gap-4 flex flex-col items-center justify-center w-full">
         {/* الاسم (مثل: لفتره محدودة) */}
         {activeAd.name && (
           <p className="text-[#BE4646] text-[14px] font-bold">
@@ -292,14 +292,14 @@ export function AdsHome({ onLoad }: AdsHomeProps) {
       </div>
       
       {/* صورة الإعلان بنفس تصميم الكود الأول */}
-      <div className="text-end mt-8">
+      <div className="text-end mt-2 lg:mt-8">
         <Image 
           src={adImageUrl} 
           alt={activeAd.name || "ads Product"} 
           width={308} 
-          height={442}
-          style={{ width: 'auto', height: 'auto' }}
-          className="max-w-full h-auto" 
+          height={342}
+          // style={{ width: 'auto', height: 'auto' }}
+          className="max-w-full h-full" 
           priority
           onError={(e) => {
             const target = e.target as HTMLImageElement;

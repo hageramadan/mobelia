@@ -354,11 +354,11 @@ export function YouMayAlsoLike() {
         )}
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-6 mb-2 md:mb-5">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-6 mb-2 md:mb-5">
           {visibleProducts.map((product, index) => (
             <div
               key={product.id}
-              className="animate-in fade-in zoom-in duration-500 flex justify-center w-full"
+              className="animate-in fade-in zoom-in duration-500 flex justify-center w-full mb-3"
               style={{
                 animationFillMode: "both",
                 animationDelay: `${index * 100}ms`,

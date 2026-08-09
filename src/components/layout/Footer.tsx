@@ -323,13 +323,13 @@ export function Footer() {
             <div className="flex gap-6">
               <Link 
                 href={settings?.terms_and_conditions ? "/terms" : "#"} 
-                className="hover:text-[#FF7700] text-white"
+                className="hover:text-[#FF7700] text-white text-sm"
               >
                 {settingsLoading ? t.loading : settings?.terms_and_conditions || t.terms}
               </Link>
               <Link 
                 href={settings?.privacy_policy ? "/privacy" : "#"} 
-                className="hover:text-[#FF7700] text-white"
+                className="hover:text-[#FF7700] text-white text-sm"
               >
                 {settingsLoading ? t.loading : settings?.privacy_policy || t.privacy}
               </Link>
