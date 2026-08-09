@@ -12,12 +12,12 @@ export default function TermsPage() {
         {/* Breadcrumbs */}
         <div className="mb-6 md:mb-8">
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Link href="/" className="hover:text-[#C092BD] transition flex items-center gap-1">
+            <Link href="/" className="hover:text-[#FF7700] transition flex items-center gap-1">
               <Home className="w-4 h-4" />
               الرئيسية
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-[#C092BD] font-medium">الشروط والأحكام</span>
+            <span className="text-[#FF7700] font-medium">الشروط والأحكام</span>
           </div>
         </div>
 

@@ -351,7 +351,7 @@ export function Navbar() {
         backgroundColor: isScrolled ? "#FFFFFF" : "transparent",
         shadow: isScrolled ? "shadow-md" : "shadow-none",
         textColor: isScrolled ? "#112B40" : "#FFFFFF",
-        logoColor: isScrolled ? "#C092BD" : "#FFFFFF",
+        logoColor: isScrolled ? "#FF7700" : "#FFFFFF",
       };
     } else {
       return {
@@ -390,14 +390,14 @@ export function Navbar() {
             {/* Logo */}
             <Link
               href="/"
-              className="text-[32px] font-bold transition-colors shrink-0 text-[#C092BD]" 
+              className="text-[32px] font-bold transition-colors shrink-0 text-[#FF7700]" 
             >
                <Image
                 src="/logo.png"
                 alt="Logo"
                 width={1000}
                 height={700}
-                className="object-contain w-20 h-20 "
+                className="object-contain w-20 h-20 py-1 "
               />
               {/* Logo */}
             </Link>
@@ -406,9 +406,9 @@ export function Navbar() {
             <nav className="flex items-center gap-6 flex-1 justify-center">
               <Link
                 href="/"
-                className="text-[16px] transition-colors hover:text-[#C092BD]"
+                className="text-[16px] transition-colors hover:text-[#FF7700]"
                 style={{
-                  color: pathname === "/" ? "#C092BD" : "#112B40",
+                  color: pathname === "/" ? "#FF7700" : "#112B40",
                   fontWeight: pathname === "/" ? "700" : "400",
                 }}
               >
@@ -418,10 +418,10 @@ export function Navbar() {
               <div className="relative" ref={categoriesRef}>
                 <button
                   aria-label="categories"
-                  className="flex items-center gap-1 text-[16px] transition-colors hover:text-[#C092BD]"
+                  className="flex items-center gap-1 text-[16px] transition-colors hover:text-[#FF7700]"
                   style={{
                     color: pathname.startsWith("/categories")
-                      ? "#C092BD"
+                      ? "#FF7700"
                       : "#112B40",
                     fontWeight: pathname.startsWith("/categories")
                       ? "700"
@@ -448,7 +448,7 @@ export function Navbar() {
                     <div className="py-2">
                       {loadingCategories ? (
                         <div className="px-4 py-3 text-center">
-                          <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-[#C092BD] border-r-transparent"></div>
+                          <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-[#FF7700] border-r-transparent"></div>
                           <p className="text-xs text-gray-500 mt-1">
                             {t.loading}
                           </p>
@@ -462,7 +462,7 @@ export function Navbar() {
                             style={{ color: "#112B40" }}
                             onClick={() => setShowCategoriesDropdown(false)}
                             onMouseEnter={(e) =>
-                              (e.currentTarget.style.color = "#C092BD")
+                              (e.currentTarget.style.color = "#FF7700")
                             }
                             onMouseLeave={(e) =>
                               (e.currentTarget.style.color = "#112B40")
@@ -485,9 +485,9 @@ export function Navbar() {
 
               <Link
                 href="/contact"
-                className="text-[16px] transition-colors hover:text-[#C092BD]"
+                className="text-[16px] transition-colors hover:text-[#FF7700]"
                 style={{
-                  color: pathname === "/contact" ? "#C092BD" : "#112B40",
+                  color: pathname === "/contact" ? "#FF7700" : "#112B40",
                   fontWeight: pathname === "/contact" ? "700" : "400",
                 }}
               >
@@ -518,7 +518,7 @@ export function Navbar() {
                           ref={searchInputRef}
                           type="search"
                           placeholder={t.search}
-                          className="w-64 h-10 ps-9 pe-9 border border-gray-300 rounded-full bg-white focus:ring-2 focus:ring-[#C092BD] focus:border-[#C092BD]"
+                          className="w-64 h-10 ps-9 pe-9 border border-gray-300 rounded-full bg-white focus:ring-2 focus:ring-[#FF7700] focus:border-[#FF7700]"
                           style={{ color: "#195073" }}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
@@ -557,7 +557,7 @@ export function Navbar() {
               >
                 <Link href="/account/wishlist">
                   {favoritesCount > 0 && (
-                    <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#C092BD] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                    <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#FF7700] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                       {favoritesCount > 99 ? "99+" : favoritesCount}
                     </span>
                   )}
@@ -575,7 +575,7 @@ export function Navbar() {
               >
                 <Link href="/cart">
                   {itemsCount > 0 && (
-                    <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#C092BD] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                    <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#FF7700] text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                       {itemsCount > 99 ? "99+" : itemsCount}
                     </span>
                   )}
@@ -611,28 +611,28 @@ export function Navbar() {
                         onClick={() => handleLanguageChange("ar")}
                         className={`w-full text-right px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${
                           language === "ar"
-                            ? "text-[#C092BD] font-bold"
+                            ? "text-[#FF7700] font-bold"
                             : ""
                         }`}
                       >
                         <span className="text-lg">🇸🇦</span>
                         العربية
                         {language === "ar" && (
-                          <span className="mr-auto text-[#C092BD]">✓</span>
+                          <span className="mr-auto text-[#FF7700]">✓</span>
                         )}
                       </button>
                       <button
                         onClick={() => handleLanguageChange("en")}
                         className={`w-full text-right px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${
                           language === "en"
-                            ? "text-[#C092BD] font-bold"
+                            ? "text-[#FF7700] font-bold"
                             : ""
                         }`}
                       >
                         <span className="text-lg">🇬🇧</span>
                         English
                         {language === "en" && (
-                          <span className="mr-auto text-[#C092BD]">✓</span>
+                          <span className="mr-auto text-[#FF7700]">✓</span>
                         )}
                       </button>
                     </div>
@@ -647,7 +647,7 @@ export function Navbar() {
                     onClick={() => setShowUserDropdown(!showUserDropdown)}
                     className="flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200 hover:bg-gray-100"
                   >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C092BD] via-[#bd99ba] to-[#C092BD] flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF7700]  to-[#FF7700] flex items-center justify-center text-white font-bold text-sm">
                       {getUserInitial()}
                     </div>
                     <ChevronDown
@@ -661,7 +661,7 @@ export function Navbar() {
                     <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg border shadow-xl z-30">
                       <div className="py-2">
                         <div className="px-4 py-3 border-b border-gray-100">
-                          <p className="text-sm font-semibold text-[#C092BD]">
+                          <p className="text-sm font-semibold text-[#FF7700]">
                             {user.name || "مستخدم"}
                           </p>
                           {user.phone && (
@@ -670,6 +670,15 @@ export function Navbar() {
                                 {" "}
                                 {user.country_code || " "} <></>
                                 {user.phone}
+                              </span>
+                            </div>
+                          )}
+                           {user.email && (
+                            <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
+                              <span dir="ltr">
+                                {" "}
+                                {/* {user.country_code || " "} <></> */}
+                                {user.email}
                               </span>
                             </div>
                           )}
@@ -721,11 +730,11 @@ export function Navbar() {
                 <Button
                   asChild
                   variant="ghost"
-                  className=" text-white rounded-[16px] bg-[#C092BD] hover:bg-[#a880a6] gap-2"
+                  className="  rounded-[16px] hover:bg-[#ffeee0]  gap-2"
                 >
                   <Link href="/auth/login">
-                    <PiUserBold className="h-5 w-5 text-[#fff]" />
-                    <span className="text-[14px] font-bold text-[#fff]">
+                    <PiUserBold className="h-5 w-5 text-[#FF7700]" />
+                    <span className="text-[14px] font-bold text-[#FF7700]">
                       {t.login}
                     </span>
                   </Link>
@@ -740,8 +749,8 @@ export function Navbar() {
 
       {/* الشريط العلوي للموبايل */}
       <div className="md:hidden sticky top-0 z-30 w-full bg-white shadow-md">
-        <div className="px-2 flex items-center justify-between">
-          <Link href="/" className="shrink-0 text-[#C092BD] font-semibold text-lg">
+        <div className="px-2 flex items-center justify-between py-3">
+          <Link href="/" className="shrink-0 text-[#FF7700] font-semibold text-lg">
               <Image
               src="/logo.png"
               alt="Logo"
@@ -761,7 +770,7 @@ export function Navbar() {
                 className="hover:bg-gray-100 rounded-full"
                 aria-label="بحث"
               >
-                <Search className="h-5 w-5 text-[#C092BD]" />
+                <Search className="h-5 w-5 text-[#FF7700]" />
               </Button>
 
               {/* Language Selector - Mobile */}
@@ -775,8 +784,8 @@ export function Navbar() {
                   className="hover:bg-gray-100 rounded-full relative"
                   aria-label="تغيير اللغة"
                 >
-                  <Globe className="h-5 w-5 text-[#C092BD]" />
-                  <span className="absolute -bottom-1 text-[8px] font-bold text-[#C092BD]">
+                  <Globe className="h-5 w-5 text-[#FF7700]" />
+                  <span className="absolute -bottom-1 text-[8px] font-bold text-[#FF7700]">
                     {language === "ar" ? "ع" : "EN"}
                   </span>
                 </Button>
@@ -792,28 +801,28 @@ export function Navbar() {
                         onClick={() => handleLanguageChange("ar")}
                         className={`w-full text-right px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${
                           language === "ar"
-                            ? "text-[#C092BD] font-bold"
+                            ? "text-[#FF7700] font-bold"
                             : ""
                         }`}
                       >
                         <span className="text-lg">🇸🇦</span>
                         العربية
                         {language === "ar" && (
-                          <span className="mr-auto text-[#C092BD]">✓</span>
+                          <span className="mr-auto text-[#FF7700]">✓</span>
                         )}
                       </button>
                       <button
                         onClick={() => handleLanguageChange("en")}
                         className={`w-full text-right px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${
                           language === "en"
-                            ? "text-[#C092BD] font-bold"
+                            ? "text-[#FF7700] font-bold"
                             : ""
                         }`}
                       >
                         <span className="text-lg">🇬🇧</span>
                         English
                         {language === "en" && (
-                          <span className="mr-auto text-[#C092BD]">✓</span>
+                          <span className="mr-auto text-[#FF7700]">✓</span>
                         )}
                       </button>
                     </div>
@@ -828,7 +837,7 @@ export function Navbar() {
                 className="hover:bg-gray-100 rounded-full"
                 aria-label="القائمة"
               >
-                <MenuIcon className="h-6 w-6 text-[#C092BD]" />
+                <MenuIcon className="h-6 w-6 text-[#FF7700]" />
               </Button> */}
             </div>
           ) : (
@@ -841,7 +850,7 @@ export function Navbar() {
                   ref={mobileSearchInputRef}
                   type="search"
                   placeholder={t.search}
-                  className="w-full h-10 ps-9 pe-9 bg-gray-100 border-0 rounded-full focus:ring-2 focus:ring-[#C092BD]"
+                  className="w-full h-10 ps-9 pe-9 bg-gray-100 border-0 rounded-full focus:ring-2 focus:ring-[#FF7700]"
                   style={{ color: "#195073" }}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -897,7 +906,7 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {favoritesCount > 0 && (
-                  <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#C092BD] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
+                  <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#FF7700] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
                     {favoritesCount > 99 ? "99+" : favoritesCount}
                   </span>
                 )}
@@ -913,7 +922,7 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {itemsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#C092BD] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
+                  <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-[#FF7700] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
                     {itemsCount > 99 ? "99+" : itemsCount}
                   </span>
                 )}
@@ -928,7 +937,7 @@ export function Navbar() {
 
               {isAuthenticated && user ? (
                 <div className="flex flex-col items-center gap-1 p-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C092BD] to-[#f0278f] flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF7700] to-[#f0278f] flex items-center justify-center text-white font-bold text-sm">
                     {getUserInitial()}
                   </div>
                   <span className="text-xs" style={{ color: "#195073" }}>
@@ -984,7 +993,7 @@ export function Navbar() {
             )}
 
             {isGuest && itemsCount > 0 && (
-              <div className="px-3 py-2 bg-[#C092BD] border border-blue-200 rounded-lg mx-3">
+              <div className="px-3 py-2 bg-[#FF7700] border border-blue-200 rounded-lg mx-3">
                 <p className="text-xs text-blue-700 text-center">
                   🛒 {t.guestCart} - {t.login} {t.account}
                 </p>
@@ -997,7 +1006,7 @@ export function Navbar() {
                 className="px-3 py-3 text-[16px] font-medium rounded-md transition-colors hover:bg-gray-50"
                 style={{ color: "#112B40" }}
                 onClick={() => setMobileMenuOpen(false)}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#C092BD")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#FF7700")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#112B40")}
               >
                 {t.home}
@@ -1038,7 +1047,7 @@ export function Navbar() {
                             setShowMobileCategoriesSheet(false);
                           }}
                           onMouseEnter={(e) =>
-                            (e.currentTarget.style.color = "#C092BD")
+                            (e.currentTarget.style.color = "#FF7700")
                           }
                           onMouseLeave={(e) =>
                             (e.currentTarget.style.color = "#112B40")
@@ -1057,7 +1066,7 @@ export function Navbar() {
                 className="px-3 py-3 text-[16px] font-medium rounded-md transition-colors hover:bg-gray-50"
                 style={{ color: "#112B40" }}
                 onClick={() => setMobileMenuOpen(false)}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#C092BD")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#FF7700")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#112B40")}
               >
                 {t.contact}
@@ -1084,11 +1093,11 @@ export function Navbar() {
           >
             <Home
               className="h-5 w-5"
-              style={{ color: pathname === "/" ? "#C092BD" : "#666" }}
+              style={{ color: pathname === "/" ? "#FF7700" : "#666" }}
             />
             <span
               className="text-[10px]"
-              style={{ color: pathname === "/" ? "#C092BD" : "#666" }}
+              style={{ color: pathname === "/" ? "#FF7700" : "#666" }}
             >
               {t.home}
             </span>
@@ -1105,13 +1114,13 @@ export function Navbar() {
             <MenuIcon
               className="h-5 w-5"
               style={{
-                color: pathname.startsWith("/categories") ? "#C092BD" : "#666",
+                color: pathname.startsWith("/categories") ? "#FF7700" : "#666",
               }}
             />
             <span
               className="text-[10px]"
               style={{
-                color: pathname.startsWith("/categories") ? "#C092BD" : "#666",
+                color: pathname.startsWith("/categories") ? "#FF7700" : "#666",
               }}
             >
               {t.categories}
@@ -1132,11 +1141,11 @@ export function Navbar() {
                 className="h-5 w-5"
                 style={{
                   color:
-                    pathname === "/account/wishlist" ? "#C092BD" : "#666",
+                    pathname === "/account/wishlist" ? "#FF7700" : "#666",
                 }}
               />
               {favoritesCount > 0 && (
-                <span className="absolute -top-2 -right-2 text-[9px] font-bold bg-[#C092BD] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
+                <span className="absolute -top-2 -right-2 text-[9px] font-bold bg-[#FF7700] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
                   {favoritesCount > 99 ? "99+" : favoritesCount}
                 </span>
               )}
@@ -1145,7 +1154,7 @@ export function Navbar() {
               className="text-[10px]"
               style={{
                 color:
-                  pathname === "/account/wishlist" ? "#C092BD" : "#666",
+                  pathname === "/account/wishlist" ? "#FF7700" : "#666",
               }}
             >
               {t.favorites}
@@ -1164,17 +1173,17 @@ export function Navbar() {
             <div className="relative">
               <ShoppingCart
                 className="h-5 w-5"
-                style={{ color: pathname === "/cart" ? "#C092BD" : "#666" }}
+                style={{ color: pathname === "/cart" ? "#FF7700" : "#666" }}
               />
               {itemsCount > 0 && (
-                <span className="absolute -top-2 -right-2 text-[9px] font-bold bg-[#C092BD] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
+                <span className="absolute -top-2 -right-2 text-[9px] font-bold bg-[#FF7700] text-white rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1">
                   {itemsCount > 99 ? "99+" : itemsCount}
                 </span>
               )}
             </div>
             <span
               className="text-[10px]"
-              style={{ color: pathname === "/cart" ? "#C092BD" : "#666" }}
+              style={{ color: pathname === "/cart" ? "#FF7700" : "#666" }}
             >
               {t.cart}
             </span>
@@ -1190,12 +1199,12 @@ export function Navbar() {
                 setShowMobileCategoriesSheet(false);
               }}
             >
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#C092BD] to-[#f0278f] flex items-center justify-center text-white font-bold text-[10px]">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#FF7700] to-[#f0278f] flex items-center justify-center text-white font-bold text-[10px]">
                 {getUserInitial()}
               </div>
               <span
                 className="text-[10px]"
-                style={{ color: pathname === "/account" ? "#C092BD" : "#666" }}
+                style={{ color: pathname === "/account" ? "#FF7700" : "#666" }}
               >
                 {t.account}
               </span>
@@ -1241,7 +1250,7 @@ export function Navbar() {
             <div className="p-4">
               {loadingCategories ? (
                 <div className="text-center py-8">
-                  <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#C092BD] border-r-transparent"></div>
+                  <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#FF7700] border-r-transparent"></div>
                   <p className="text-sm text-gray-500 mt-2">{t.loading}</p>
                 </div>
               ) : categories.length > 0 ? (

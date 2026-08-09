@@ -8,31 +8,31 @@ const nextConfig: NextConfig = {
         remotePatterns: [
       {
         protocol: 'http',
-        hostname: 'education.admin.t-carts.com',
+        hostname: 'alsas.admin.t-carts.com',
         port: '',
         pathname: '/storage/**',
       },
       {
         protocol: 'https',
-        hostname: 'education.admin.t-carts.com',
+        hostname: 'alsas.admin.t-carts.com',
         port: '',
         pathname: '/storage/**',
       },
          {
         protocol: 'http',
-        hostname: 'education.admin.t-carts.com',
+        hostname: 'alsas.admin.t-carts.com',
         port: '',
         pathname: '/**', 
       },
        {
-        protocol: 'http', // في حالة استخدام http للتطوير المحلي
+        protocol: 'http', 
         hostname: 'localhost',
         port: '',
         pathname: '/**',
       },
     ],
-    qualities: [75, 90], // إضافة جودة 90 إلى القائمة المسموحة
-    domains: [], // أضف أي domains تحتاجها هنا
+    qualities: [75,85, 90], 
+    domains: [], 
   },
 };
 

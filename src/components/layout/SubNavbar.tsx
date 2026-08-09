@@ -169,7 +169,7 @@ export function SubNavbar() {
   //  إذا كان في السيرفر أو لم يتم التحميل بعد، عرض محتوى ثابت
   if (!isClient) {
     return (
-      <div className="w-full bg-[#C092BD] border-b border-[#E4E7E9] py-2 md:py-3">
+      <div className="w-full bg-[#FF7700] border-b border-[#E4E7E9] py-2 md:py-3">
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0">
             <div className="flex gap-5 items-center">
@@ -206,11 +206,11 @@ export function SubNavbar() {
   }
 
   return (
-    <div className="w-full bg-[#C092BD] border-b border-[#E4E7E9] py-2 md:py-3">
+    <div className="w-full bg-[#FF7700] border-b border-[#E4E7E9] py-2 md:py-3">
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between ">
           {/* Right Section - Email & Phone */}
-          <div className="hidden lg:flex gap-5 items-center ">
+          <div className="flex gap-5 items-center ">
             {/* Phone */}
             <div className="hidden md:flex items-center gap-1">
               <LiaPhoneSolid className="text-white" />
@@ -224,7 +224,7 @@ export function SubNavbar() {
             </div>
             
             {/* Email */}
-            <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <TfiEmail className="text-white" />
               <Link
                 href={settings?.email ? `mailto:${settings.email}` : "#"}
@@ -236,12 +236,12 @@ export function SubNavbar() {
           </div>
 
           {/* Center Section - Free Shipping Message */}
-          <div className="flex items-start md:items-center gap-1 md:gap-3">
-            {/* <PiGiftBold className="text-white w-4 h-4 md:w-5 md:h-5" /> */}
+          {/* <div className="flex items-start md:items-center gap-1 md:gap-3">
+            <PiGiftBold className="text-white w-4 h-4 md:w-5 md:h-5" />
             <p className="text-white text-xs md:text-sm font-semibold ">
               {t.freeShipping}
             </p>
-          </div>
+          </div> */}
           
           {/* Left Section - Language & Social Media */}
           <div className="flex items-center gap-4 md:gap-6">
@@ -293,25 +293,25 @@ export function SubNavbar() {
                     <button
                       onClick={() => handleLanguageChange("ar")}
                       className={`w-full text-right px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${
-                        language === "ar" ? "text-[#C092BD] font-bold" : ""
+                        language === "ar" ? "text-[#FF7700] font-bold" : ""
                       }`}
                     >
                       <span className="text-lg">🇸🇦</span>
                       العربية
                       {language === "ar" && (
-                        <span className="mr-auto text-[#C092BD]">✓</span>
+                        <span className="mr-auto text-[#FF7700]">✓</span>
                       )}
                     </button>
                     <button
                       onClick={() => handleLanguageChange("en")}
                       className={`w-full text-right px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${
-                        language === "en" ? "text-[#C092BD] font-bold" : ""
+                        language === "en" ? "text-[#FF7700] font-bold" : ""
                       }`}
                     >
                       <span className="text-lg">🇬🇧</span>
                       English
                       {language === "en" && (
-                        <span className="mr-auto text-[#C092BD]">✓</span>
+                        <span className="mr-auto text-[#FF7700]">✓</span>
                       )}
                     </button>
                   </div>

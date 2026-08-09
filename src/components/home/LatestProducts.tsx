@@ -4,8 +4,11 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import { ProductCard } from "../products/ProductCard";
+import { Button } from "../ui/button";
 import { getNewProducts, ProductData } from "@/services/api";
+import { AdsHome } from "./AdsHome";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Product, ProductVariant, VariantAttribute } from "@/types/product";
 
@@ -72,9 +75,9 @@ const transformProduct = (product: ProductData): Product => {
   const cleanImageUrl = (url: string) => {
     if (!url) return "/images/placeholder.jpg";
     if (url.startsWith("/storage")) {
-      return `https://education.admin.t-carts.com${url}`;
+      return `https://alsas.admin.t-carts.com${url}`;
     }
-    return `https://education.admin.t-carts.com${url}`;
+    return `https://alsas.admin.t-carts.com${url}`;
   };
 
   const mainImage =
@@ -129,7 +132,6 @@ const transformProduct = (product: ProductData): Product => {
     hasVariants: hasVariants,
     variants: variants,
     variantId: variantId,
-    // ✅ إضافة الكمية من البيانات المسترجعة
     quantity: product.quantity ?? null,
   };
 };
@@ -142,14 +144,14 @@ export function LatestProducts({ onLoad }: LatestProductsProps) {
   const [isClient, setIsClient] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [displayCount, setDisplayCount] = useState(8);
+  const [displayCount, setDisplayCount] = useState(6); // ✅ تغيير من 8 إلى 6 (مثل الكود الأول)
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [totalProducts, setTotalProducts] = useState(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  //  تغيير الاسم من isMounted إلى isMountedRef لتجنب التعارض
   const isMountedRef = useRef(true);
   const fetchingRef = useRef(false);
 
@@ -157,7 +159,9 @@ export function LatestProducts({ onLoad }: LatestProductsProps) {
   useEffect(() => {
     if (!isInitialLoading && !isDataLoaded && onLoad) {
       setIsDataLoaded(true);
-      onLoad();
+      setTimeout(() => {
+        onLoad();
+      }, 0);
     }
   }, [isInitialLoading, isDataLoaded, onLoad]);
 
@@ -226,35 +230,49 @@ export function LatestProducts({ onLoad }: LatestProductsProps) {
     };
   }, [fetchProducts]);
 
-  const visibleProducts = products.slice(0, displayCount);
+  // ✅ دالة Load More (مثل الكود الأول)
+  const handleLoadMore = () => {
+    setIsLoadingMore(true);
+    setTimeout(() => {
+      setDisplayCount((prev) => Math.min(prev + 6, products.length));
+      setIsLoadingMore(false);
+    }, 500);
+  };
 
-  //  عرض نسخة ثابتة أثناء Hydration (بدون نصوص مترجمة)
+  // ✅ استخدام displayCount للتحكم في المنتجات المعروضة (مثل الكود الأول)
+  const visibleProducts = products.slice(0, displayCount);
+  const hasMoreProducts = displayCount < products.length;
+
+  // ✅ آخر منتج للعرض في الموبايل (مثل الكود الأول)
+  const lastProduct = products[products.length - 1];
+
+  //  عرض نسخة ثابتة أثناء Hydration
   if (!isClient) {
     return (
       <section className="py-2 md:py-12 bg-white">
         <div className="container-custom">
-          <div className="flex flex-col justify-center items-center py-20 gap-4">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#C092BD]"></div>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#FF7700]"></div>
           </div>
         </div>
       </section>
     );
   }
 
-  // عرض السبينر الرئيسي أثناء التحميل الأولي -  استخدام الترجمة
+  // عرض السبينر الرئيسي أثناء التحميل الأولي
   if (isInitialLoading) {
     return (
       <section className="py-2 md:py-12 bg-white">
         <div className="container-custom">
-          <div className="flex flex-col justify-center items-center py-20 gap-4">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#C092BD]"></div>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#FF7700]"></div>
           </div>
         </div>
       </section>
     );
   }
 
-  //  عرض رسالة خطأ مترجمة
+  // عرض رسالة خطأ (مثل الكود الأول - مخفية)
   if (error && products.length === 0) {
     if (!isDataLoaded && onLoad) {
       setIsDataLoaded(true);
@@ -263,74 +281,121 @@ export function LatestProducts({ onLoad }: LatestProductsProps) {
     return <></>;
   }
 
-  //  عرض رسالة عدم وجود منتجات
-  if (products.length === 0 && !isInitialLoading) {
-    if (!isDataLoaded && onLoad) {
-      setIsDataLoaded(true);
-      onLoad();
-    }
-    return null;
-  }
-
   return (
     <section className="py-2 md:py-12 bg-white">
       <div className="container-custom">
-        {/* Header -  استخدام الترجمة */}
-        <div className="mb-2 md:mb-5 flex justify-between items-center">
-          <h2
-            className="text-base md:text-2xl font-bold"
-            style={{ color: "#112B40" }}
-          >
-            {t.latestProducts}
-          </h2>
-          <Link
-            href="/products"
-            className="text-[#C092BD] text-xs lg:text-sm font-semibold hover:underline"
-          >
-            {t.viewMore}
-          </Link>
-        </div>
-
-        {/* Products Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center mb-10">
-          {visibleProducts.map((product, index) => (
-            <div
-              key={product.id}
-              className="animate-in fade-in zoom-in duration-500 flex justify-center w-full"
-              style={{
-                animationFillMode: "both",
-                animationDelay: `${index * 100}ms`,
-              }}
-            >
-              <ProductCard
-                id={product.id}
-                name={product.name}
-                price={product.price}
-                image={product.image}
-                hoverImage={product.hoverImage}
-                href={product.href}
-                originalPrice={product.originalPrice}
-                discount={product.discount}
-                colors={product.colors}
-                rating={product.rating}
-                reviewsCount={product.reviewsCount}
-                isBestSeller={product.isBestSeller}
-                hasVariants={product.hasVariants || false}
-                variants={product.variants || []}
-                variantId={product.variantId || null}
-                quantity={product.quantity} // ✅ تمرير الكمية إلى ProductCard
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Loading State for Load More -  استخدام الترجمة */}
-        {isLoadingMore && (
-          <div className="flex flex-col justify-center items-center py-8 gap-2">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C092BD]"></div>
-            <p className="text-gray-500 text-sm">{t.loading}</p>
+        {/* ✅ Header - نفس تصميم الكود الأول مع دعم اللغة */}
+        {visibleProducts.length > 0 && (
+          <div className="mb-2 md:mb-5 flex justify-between items-center">
+            <h2 className="text-lg md:text-xl font-bold" style={{ color: '#112B40' }}>
+              {t.latestProducts}
+            </h2>
+            <Link href="/products" className="text-[14px] font-bold text-[#FF7700] hover:underline">
+              {t.viewMore}
+            </Link>
           </div>
         )}
+
+        {/* ✅ Products Grid - نفس تصميم الكود الأول */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-6 justify-items-center mb-10">
+          <div className="col-span-3 grid grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+            {visibleProducts.map((product, index) => (
+              <div
+                key={product.id}
+                className="animate-in fade-in zoom-in duration-500"
+                style={{ 
+                  animationFillMode: 'both',
+                  animationDelay: `${index * 100}ms`
+                }}
+              >
+                <ProductCard 
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  image={product.image}
+                  hoverImage={product.hoverImage}
+                  href={product.href}
+                  originalPrice={product.originalPrice}
+                  discount={product.discount}
+                  colors={product.colors}
+                  rating={product.rating}
+                  reviewsCount={product.reviewsCount}
+                  isBestSeller={product.isBestSeller}
+                  hasVariants={product.hasVariants || false}
+                  variants={product.variants || []}
+                  variantId={product.variantId || null}
+                  quantity={product.quantity} // ✅ تمرير الكمية
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* ✅ Mobile extra products - نفس تصميم الكود الأول */}
+          <div className="sm:hidden flex flex-col gap-6">
+            {lastProduct && (
+              <>
+                <ProductCard 
+                  id={lastProduct.id}
+                  name={lastProduct.name}
+                  price={lastProduct.price}
+                  image={lastProduct.image}
+                  hoverImage={lastProduct.hoverImage}
+                  href={lastProduct.href}
+                  originalPrice={lastProduct.originalPrice}
+                  discount={lastProduct.discount}
+                  colors={lastProduct.colors}
+                  rating={lastProduct.rating}
+                  reviewsCount={lastProduct.reviewsCount}
+                  isBestSeller={lastProduct.isBestSeller}
+                  hasVariants={lastProduct.hasVariants || false}
+                  variants={lastProduct.variants || []}
+                  variantId={lastProduct.variantId || null}
+                  quantity={lastProduct.quantity}
+                />
+                <ProductCard 
+                  id={lastProduct.id}
+                  name={lastProduct.name}
+                  price={lastProduct.price}
+                  image={lastProduct.image}
+                  hoverImage={lastProduct.hoverImage}
+                  href={lastProduct.href}
+                  originalPrice={lastProduct.originalPrice}
+                  discount={lastProduct.discount}
+                  colors={lastProduct.colors}
+                  rating={lastProduct.rating}
+                  reviewsCount={lastProduct.reviewsCount}
+                  isBestSeller={lastProduct.isBestSeller}
+                  hasVariants={lastProduct.hasVariants || false}
+                  variants={lastProduct.variants || []}
+                  variantId={lastProduct.variantId || null}
+                  quantity={lastProduct.quantity}
+                />
+              </>
+            )}
+          </div>
+
+          {/* ✅ Sale Banner - نفس تصميم الكود الأول مع الحفاظ على AdsHome */}
+          <AdsHome />
+        </div>
+
+        {/* ✅ Loading State for Load More - نفس تصميم الكود الأول */}
+        {isLoadingMore && (
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7700]"></div>
+          </div>
+        )}
+
+        {/* ✅ Load More Button - نفس تصميم الكود الأول */}
+        {/* {hasMoreProducts && !isLoadingMore && (
+          <div className="text-center my-8">
+            <Button
+              onClick={handleLoadMore}
+              className="px-8 py-2 bg-[#FF7700] text-white rounded-md hover:bg-[#e66a00] transition-colors"
+            >
+              عرض المزيد
+            </Button>
+          </div>
+        )} */}
       </div>
     </section>
   );

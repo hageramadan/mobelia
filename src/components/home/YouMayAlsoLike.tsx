@@ -95,9 +95,9 @@ const transformProduct = (product: ProductData): Product => {
   const cleanImageUrl = (url: string) => {
     if (!url) return "/images/placeholder.jpg";
     if (url.startsWith("/storage")) {
-      return `https://education.admin.t-carts.com${url}`;
+      return `https://alsas.admin.t-carts.com${url}`;
     }
-    return `https://education.admin.t-carts.com${url}`;
+    return `https://alsas.admin.t-carts.com${url}`;
   };
 
   const mainImage =
@@ -307,7 +307,7 @@ export function YouMayAlsoLike() {
             <div className="flex flex-col items-center gap-4">
               <div className="relative">
                 <div className="w-12 h-12 border-4 border-gray-200 rounded-full"></div>
-                <div className="absolute top-0 left-0 w-12 h-12 border-4 border-[#C092BD] border-t-transparent rounded-full animate-spin"></div>
+                <div className="absolute top-0 left-0 w-12 h-12 border-4 border-[#FF7700] border-t-transparent rounded-full animate-spin"></div>
               </div>
             
             </div>
@@ -334,7 +334,7 @@ export function YouMayAlsoLike() {
           </h2>
           <Link
             href="/products"
-            className="text-[#C092BD] text-xs lg:text-sm font-bold hover:underline transition-all duration-300 flex items-center gap-1"
+            className="text-[#FF7700] text-xs lg:text-sm font-bold hover:underline transition-all duration-300 flex items-center gap-1"
           >
             {t("youMayAlsoLike.viewMore")}
             {/* <ChevronLeft className="w-4 h-4" /> */}
@@ -347,14 +347,14 @@ export function YouMayAlsoLike() {
         {isLoadingMore && (
           <div className="flex justify-center py-4 mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 border-2 border-gray-300 border-t-[#C092BD] rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-gray-300 border-t-[#FF7700] rounded-full animate-spin"></div>
               <span className="text-gray-500 text-sm">{t("products.loadingMore")}</span>
             </div>
           </div>
         )}
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-6 mb-2 md:mb-5">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-6 mb-2 md:mb-5">
           {visibleProducts.map((product, index) => (
             <div
               key={product.id}
@@ -395,8 +395,8 @@ export function YouMayAlsoLike() {
               className="px-6 py-2 text-sm font-semibold transition-all duration-300 hover:scale-105"
               style={{
                 backgroundColor: "transparent",
-                color: "#C092BD",
-                border: "2px solid #C092BD",
+                color: "#FF7700",
+                border: "2px solid #FF7700",
                 borderRadius: "8px",
               }}
             >

@@ -309,9 +309,9 @@ useEffect(() => {
     const cleanImageUrl = (url: string) => {
       if (!url) return "/placeholder-image.jpg";
       if (url.startsWith("/storage")) {
-        return `https://education.admin.t-carts.com${url}`;
+        return `https://alsas.admin.t-carts.com${url}`;
       }
-      return `https://education.admin.t-carts.com/storage${url}`;
+      return `https://alsas.admin.t-carts.com/storage${url}`;
     };
 
     // ✅ استخراج الكمية من المنتج
@@ -392,7 +392,7 @@ useEffect(() => {
                   onClick={() => {
                     setIsMobileFilterOpen(true);
                   }}
-                  className="md:hidden flex items-center gap-2 px-4 py-2 bg-[#C092BD] rounded-[8px] hover:bg-gray-200 transition-colors"
+                  className="md:hidden flex items-center gap-2 px-4 py-2 bg-[#FF7700] rounded-[8px] hover:bg-gray-200 transition-colors"
                 >
                   <VscSettings className="w-6 h-6 text-white" />
                 </button>

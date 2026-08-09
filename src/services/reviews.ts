@@ -1,7 +1,7 @@
 // services/reviews.ts
 import { getHeaders } from './api';
 
-const API_URL = "https://education.admin.t-carts.com/api";
+const API_URL = "https://alsas.admin.t-carts.com/api";
 
 export interface ReviewData {
   rating: number;

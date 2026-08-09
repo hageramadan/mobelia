@@ -4,8 +4,9 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from '../ui/button'
 import Link from 'next/link'
-import { FaArrowLeft } from 'react-icons/fa'
+import { FaArrowRight } from 'react-icons/fa'
 import Image from 'next/image'
+import { MdOutlineTimer } from 'react-icons/md'
 import { getAds, getFullImageUrl } from '@/services/api'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -34,7 +35,7 @@ const getTranslations = (lang: string) => {
   if (lang === 'en') {
     return {
       loading: "Loading...",
-      shopNow: "Get the Offer",
+      shopNow: "Shop Now",
       expiresIn: "Expires in",
       days: "Days",
       hours: "Hours",
@@ -48,7 +49,7 @@ const getTranslations = (lang: string) => {
   // Arabic (default)
   return {
     loading: "جاري التحميل...",
-    shopNow: "تسوق الان",
+    shopNow: "شراء الآن",
     expiresIn: "سينتهي الخصم خلال",
     days: "أيام",
     hours: "ساعات",
@@ -125,9 +126,36 @@ export function AdsHome({ onLoad }: AdsHomeProps) {
         setIsExpired(true);
       }
     };    
-    if (!endDateStr) {
-      const fallbackDate = new Date(activeAd.created_at);
-      fallbackDate.setDate(fallbackDate.getDate() + 3);
+
+    // ✅ استخدام end_date من الـ API مباشرة
+    if (endDateStr) {
+      const endDate = new Date(endDateStr);
+      
+      if (isNaN(endDate.getTime())) {
+        console.error('Invalid end_date:', endDateStr);
+        // ✅ استخدام تاريخ احتياطي إذا كان التاريخ غير صحيح
+        const fallbackDate = new Date();
+        fallbackDate.setDate(fallbackDate.getDate() + 7); // 7 أيام افتراضية
+        calculateTimeLeft(fallbackDate);
+        
+        const timer = setInterval(() => {
+          calculateTimeLeft(fallbackDate);
+        }, 1000);
+        
+        return () => clearInterval(timer);
+      }
+
+      calculateTimeLeft(endDate);
+      
+      const timer = setInterval(() => {
+        calculateTimeLeft(endDate);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } else {
+      // ✅ إذا لم يوجد end_date، استخدم تاريخ افتراضي (7 أيام من الآن)
+      const fallbackDate = new Date();
+      fallbackDate.setDate(fallbackDate.getDate() + 7);
       calculateTimeLeft(fallbackDate);
       
       const timer = setInterval(() => {
@@ -136,46 +164,31 @@ export function AdsHome({ onLoad }: AdsHomeProps) {
       
       return () => clearInterval(timer);
     }
-
-    const endDate = new Date(endDateStr);
-    
-    if (isNaN(endDate.getTime())) {
-      console.error('Invalid end_date:', endDateStr);
-      return;
-    }
-
-    calculateTimeLeft(endDate);
-    
-    const timer = setInterval(() => {
-      calculateTimeLeft(endDate);
-    }, 1000);
-
-    return () => clearInterval(timer);
   }, [activeAd]);
 
-  // Format numbers to always show 2 digits
+  // دالة لتنسيق الوصف (إزالة الأسطر الفارغة)
+  const formatDescription = (description: string) => {
+    return description.replace(/\n/g, ' ').trim();
+  };
+
+  // تنسيق الأرقام لعرضها برقمين (00)
   const formatNumber = (num: number) => String(num).padStart(2, '0');
 
-  // عرض شاشة تحميل
+  // عرض شاشة تحميل بنفس تصميم الكود الأول
   if (loading) {
     return (
-      <section className="bg-[#FDF2F8] py-12">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C092BD]"></div>
-        </div>
-      </section>
+      <div className="ms-4 sm:mx-0 pt-6 px-2 w-full md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-center gap-4 min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7700]"></div>
+      </div>
     );
   }
 
   // عرض نسخة ثابتة أثناء Hydration
   if (!isClient) {
     return (
-      <section className="bg-[#FDF2F8] py-12">
-        <div className="flex flex-row items-stretch justify-between gap-3 sm:gap-6 md:gap-10 min-h-[200px]">
-          <div className="flex items-center justify-center w-full">
-          </div>
-        </div>
-      </section>
+      <div className="ms-4 sm:mx-0 pt-6 px-2 w-full md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-center gap-4 min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7700]"></div>
+      </div>
     );
   }
 
@@ -192,93 +205,108 @@ export function AdsHome({ onLoad }: AdsHomeProps) {
   const hasTimer = timeLeft.days > 0 || timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0;
 
   return (
-    <section className="bg-[#FDF2F8] mb-5 md:mb-20 my-12">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
+    <div className="ms-4 sm:mx-0 pt-6  w-full md:col-span-1 bg-[#FBEDDE] flex flex-col items-center justify-center gap-4">
+      <div className="text-center gap-4 flex flex-col items-center justify-center w-full">
+        {/* الاسم (مثل: لفتره محدودة) */}
+        {activeAd.name && (
+          <p className="text-[#BE4646] text-[14px] font-bold">
+            {activeAd.name}
+          </p>
+        )}
         
-        {/* Left Content */}
-        <div className="flex px-4 pb-5 sm:ps-[2%] md:ps-[4%] lg:ps-[10%] xl:ps-[13%] mx-auto flex-col gap-2 md:gap-[22px] w-full md:w-1/2 order-2 md:order-1">
-          
-          {/* Limited offer badge */}
-          <p className="text-[12px] md:text-[16px] font-semibold py-1 px-3 text-[#BE4646]">
-            {activeAd.name || t.limitedOffer}
+        {/* العنوان الفرعي (مثل: خصم 32%) */}
+        {activeAd.sub_title && (
+          <p className="text-[#191C1F] text-[24px] md:text-[32px] font-bold">
+            {activeAd.sub_title}
           </p>
-          
-          {/* Discount badge */}
-          <div className="flex items-center gap-3">
-            <p className="text-[20px] md:text-[32px] font-bold py-1 px-3 text-[#191C1F] w-fit rounded-md">
-              {activeAd.sub_title}
-            </p>
-          </div>
-          
-          <p className="text-sm md:text-[22px] text-[#191C1F] w-full md:w-[80%] leading-[1.5]">
-            {activeAd.description || t.dontMiss}
+        )}
+        
+        {/* الوصف */}
+        {activeAd.description && (
+          <p className="text-[#475156] text-[1rem]">
+            {formatDescription(activeAd.description)}
           </p>
-          
-          {/* Countdown Timer - يظهر فقط إذا كان هناك وقت متبقي */}
-          {hasTimer && (
-            <div className="mt-4">
-              <p className="text-sm md:text-base text-gray-600 mb-3">{t.expiresIn}</p>
-              <div className="flex gap-3 md:gap-5">
-                <div className="text-center">
-                  <div className="bg-white text-[#191C1F] rounded-lg px-2 py-1 md:px-4 md:py-2 min-w-[50px] md:min-w-[70px]">
-                    <span className="text-xl md:text-3xl font-bold">{formatNumber(timeLeft.days)}</span>
-                  </div>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-1">{t.days}</p>
+        )}
+        
+        {/* ✅ مؤقت العد التنازلي - كونت داون كامل (أيام، ساعات، دقائق، ثواني) */}
+        {hasTimer && (
+          <div className="flex flex-col items-center gap-2 w-full">
+            <p className="text-[#191C1F] text-[14px] font-medium">{t.expiresIn}</p>
+            <div className="flex gap-1 items-center justify-center mx-2">
+              {/* ✅ عرض الأيام */}
+              <div className="flex flex-col items-center">
+                <div className="bg-[#FF7700] text-white rounded-lg px-3 py-2 md:px-4 md:py-3 min-w-[10px] md:min-w-[40px] shadow-lg">
+                  <span className="text-xl  font-bold">{formatNumber(timeLeft.days)}</span>
                 </div>
-                <div className="text-center">
-                  <div className="bg-white text-[#191C1F] rounded-lg px-2 py-1 md:px-4 md:py-2 min-w-[50px] md:min-w-[70px]">
-                    <span className="text-xl md:text-3xl font-bold">{formatNumber(timeLeft.hours)}</span>
-                  </div>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-1">{t.hours}</p>
+                <p className="text-[10px] md:text-xs text-gray-600 mt-1">{t.days}</p>
+              </div>
+              
+              <span className="text-[#FF7700] text-xl lg:text-2xl  font-bold">:</span>
+              
+              {/* ✅ عرض الساعات */}
+              <div className="flex flex-col items-center">
+                <div className="bg-[#FF7700] text-white rounded-lg px-3 py-2 md:px-4 md:py-3 min-w-[10px] md:min-w-[40px] shadow-lg">
+                  <span className="text-xl  font-bold">{formatNumber(timeLeft.hours)}</span>
                 </div>
-                <div className="text-center">
-                  <div className="bg-white text-[#191C1F] rounded-lg px-2 py-1 md:px-4 md:py-2 min-w-[50px] md:min-w-[70px]">
-                    <span className="text-xl md:text-3xl font-bold">{formatNumber(timeLeft.minutes)}</span>
-                  </div>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-1">{t.minutes}</p>
+                <p className="text-[10px] md:text-xs text-gray-600 mt-1">{t.hours}</p>
+              </div>
+              
+              <span className="text-[#FF7700] hidden md:flex text-xl lg:text-2xl  font-bold">:</span>
+              
+              {/* ✅ عرض الدقائق */}
+              <div className="hidden md:flex flex-col items-center">
+                <div className="bg-[#FF7700] text-white rounded-lg px-3 py-2 md:px-4 md:py-3 min-w-[10px] md:min-w-[40px] shadow-lg">
+                  <span className="text-xl  font-bold">{formatNumber(timeLeft.minutes)}</span>
                 </div>
-                <div className="text-center">
-                  <div className="bg-white text-[#191C1F] rounded-lg px-2 py-1 md:px-4 md:py-2 min-w-[50px] md:min-w-[70px]">
-                    <span className="text-xl md:text-3xl font-bold">{formatNumber(timeLeft.seconds)}</span>
-                  </div>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-1">{t.seconds}</p>
+                <p className="text-[10px] md:text-xs text-gray-600 mt-1">{t.minutes}</p>
+              </div>
+              
+              <span className="text-[#FF7700] hidden md:flex text-2xl  font-bold">:</span>
+              
+              {/* ✅ عرض الثواني */}
+              <div className="hidden md:flex flex-col items-center">
+                <div className="bg-[#FF7700] text-white rounded-lg px-3 py-2 md:px-4 md:py-3 min-w-[10px] md:min-w-[40px] shadow-lg animate-pulse">
+                  <span className="text-xl  font-bold">{formatNumber(timeLeft.seconds)}</span>
                 </div>
+                <p className="text-[10px] md:text-xs text-gray-600 mt-1">{t.seconds}</p>
               </div>
             </div>
-          )}
-          
-          {/* Shop Button */}
-          <Button
-            asChild
-            aria-label='buy now'
-            className="w-full md:w-[180px] md:h-[60px] animate-in text-[12px] md:text-[16px] font-bold fade-in slide-in-from-bottom-5 duration-700 delay-200 rounded-xl mt-4"
-            style={{ backgroundColor: '#08B2A7' }}
+          </div>
+        )}
+        
+        {/* زر الشراء بنفس تصميم الكود الأول */}
+        <Button
+          asChild
+          aria-label='buy now'
+          className="hidden md:flex w-fit md:w-[180px] md:h-[60px] rounded animate-in text-[12px] md:text-[16px] font-bold fade-in slide-in-from-bottom-5 duration-700 delay-200"
+          style={{ backgroundColor: '#FF7700' }}
+        >
+          <Link 
+            href={activeAd.link || "/products"} 
+            className="flex uppercase items-center justify-center gap-2 text-white"
           >
-            <Link href={activeAd.link || '/products'} className="flex items-center justify-center gap-2 text-white">
-              {t.shopNow}
-              {/* <FaArrowLeft className="h-4 w-4" /> */}
-            </Link>
-          </Button>
-        </div>
-        
-        {/* Right Image */}
-        <div className="w-full md:w-1/2 md:ps-30 order-1 md:order-2">
-          <Image 
-            src={adImageUrl} 
-            alt={activeAd.name || "Advertisement"} 
-            className="w-full h-auto md:w-[100%] md:h-[532px] object-cover" 
-            width={500} 
-            height={300} 
-            priority
-            onError={(e) => {
-              // في حال فشل تحميل الصورة، استخدم الصورة الافتراضية
-              const target = e.target as HTMLImageElement;
-              target.src = "/images/advs.png";
-            }}
-          />
-        </div>
-        
+            {/* <FaArrowRight className="h-4 w-4" /> */}
+            {t.shopNow}
+          </Link>
+        </Button>
       </div>
-    </section>
+      
+      {/* صورة الإعلان بنفس تصميم الكود الأول */}
+      <div className="text-end mt-8">
+        <Image 
+          src={adImageUrl} 
+          alt={activeAd.name || "ads Product"} 
+          width={308} 
+          height={442}
+          style={{ width: 'auto', height: 'auto' }}
+          className="max-w-full h-auto" 
+          priority
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "/images/advs.png";
+          }}
+        />
+      </div>
+    </div>
   )
 }

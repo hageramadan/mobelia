@@ -18,7 +18,7 @@ export default function Home() {
     categories: false,
     bestProducts: false,
     latestProducts: false,
-    ads: false,
+    // ads: false,
     bestDiscounts: false,
   });
 
@@ -27,7 +27,7 @@ export default function Home() {
     const allLoaded = Object.values(dataLoaded).every(value => value === true);
     
     if (allLoaded) {
-      console.log("✅ All components loaded!");
+      // console.log("✅ All components loaded!");
       setTimeout(() => {
         setIsLoading(false);
       }, 300);
@@ -51,9 +51,9 @@ export default function Home() {
     setDataLoaded(prev => ({ ...prev, latestProducts: true }));
   }, []);
 
-  const handleAdsLoad = useCallback(() => {
-    setDataLoaded(prev => ({ ...prev, ads: true }));
-  }, []);
+  // const handleAdsLoad = useCallback(() => {
+  //   setDataLoaded(prev => ({ ...prev, ads: true }));
+  // }, []);
 
   const handleBestDiscountsLoad = useCallback(() => {
     setDataLoaded(prev => ({ ...prev, bestDiscounts: true }));
@@ -66,9 +66,10 @@ export default function Home() {
       <div className={isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-500"}>
         <Hero onLoad={handleHeroLoad} />
         <CategoriesSection onLoad={handleCategoriesLoad} />
-        <BestProducts onLoad={handleBestProductsLoad} />
+        
         <LatestProducts onLoad={handleLatestProductsLoad} />
-        <AdsHome onLoad={handleAdsLoad} />
+        <BestProducts onLoad={handleBestProductsLoad} />  
+        {/* <AdsHome onLoad={handleAdsLoad} /> */}
         <BestDiscounts onLoad={handleBestDiscountsLoad} />
       </div>
     </>

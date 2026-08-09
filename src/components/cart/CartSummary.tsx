@@ -123,7 +123,7 @@ const SummaryRow = ({
   };
 
   const getValueClassName = () => {
-    if (isDiscount) return "text-[#C092BD] font-bold";
+    if (isDiscount) return "text-[#FF7700] font-bold";
     if (isTotal) return "text-[20px] font-bold";
     return "font-semibold text-gray-800";
   };
@@ -142,7 +142,7 @@ const SummaryRow = ({
 };
 
 const CheckoutButton = ({ t }: { t: any }) => (
-  <Link href="/checkout" className="flex items-center justify-center gap-2 mt-4 w-full bg-[#C092BD] text-white py-2 rounded-[8px] font-bold text-lg transition-all duration-300 shadow-md hover:shadow-lg hover:bg-[#C092BD]">
+  <Link href="/checkout" className="flex items-center justify-center gap-2 mt-4 w-full bg-[#FF7700] text-white py-2 rounded-[8px] font-bold text-lg transition-all duration-300 shadow-md hover:shadow-lg hover:bg-[#FF7700]">
     <button className="">
       {t('cartSummary.checkout')}
     </button>

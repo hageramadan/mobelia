@@ -107,7 +107,7 @@ interface ReturnDetails {
 }
 
 // ========== إعدادات API ==========
-const API_URL = 'https://education.admin.t-carts.com/api';
+const API_URL = 'https://alsas.admin.t-carts.com/api';
 
 const getToken = (): string | null => {
   if (typeof window !== 'undefined') {
@@ -210,7 +210,7 @@ const transformReturnDetails = (apiReturn: any, locale: string = "ar-EG"): Retur
 const cleanImageUrl = (url: string): string => {
   if (!url) return PLACEHOLDER_IMAGE;
   if (url.startsWith("/storage")) {
-    return `https://education.admin.t-carts.com${url}`;
+    return `https://alsas.admin.t-carts.com${url}`;
   }
   return url;
 };
@@ -347,7 +347,7 @@ export default function ReturnDetailsPage() {
     return (
       <div className="min-h-screen bg-gradient-to-l from-[#bdcbf12a] to-[#feecea3b] page-with-padding">
         <div className="container mx-auto px-4 py-8 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C092BD] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7700] mx-auto"></div>
           <p className="text-gray-500 mt-4">{t('returns.loading')}</p>
         </div>
       </div>
@@ -361,7 +361,7 @@ export default function ReturnDetailsPage() {
           <RefreshCw className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-800 mb-2">{t('orders.orderNotFound')}</h2>
           <p className="text-gray-500 mb-4">{t('orders.orderNotFoundDesc')}</p>
-          <Link href="/account/returns" className="inline-block bg-[#C092BD] text-white px-6 py-2 rounded-[8px] hover:bg-[#C092BD] transition">
+          <Link href="/account/returns" className="inline-block bg-[#FF7700] text-white px-6 py-2 rounded-[8px] hover:bg-[#FF7700] transition">
             {t('orders.backToOrders')}
           </Link>
         </div>
@@ -383,11 +383,11 @@ export default function ReturnDetailsPage() {
       <div className="container mx-auto mb-3 px-4 md:px-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-          <Link href="/account" className="hover:text-[#C092BD] transition">{t('account.myAccount')}</Link>
+          <Link href="/account" className="hover:text-[#FF7700] transition">{t('account.myAccount')}</Link>
           <ChevronRight className="w-4 h-4" />
-          <Link href="/account/returns" className="hover:text-[#C092BD] transition">{t('returns.title')}</Link>
+          <Link href="/account/returns" className="hover:text-[#FF7700] transition">{t('returns.title')}</Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-[#C092BD] font-medium">{t('orders.orderDetails')}</span>
+          <span className="text-[#FF7700] font-medium">{t('orders.orderDetails')}</span>
         </div>
         
         <h1 className="text-[20px] font-bold mb-2 md:text-xl text-[#180100] md:mb-4">{t('orders.orderDetails')}</h1>
@@ -407,7 +407,7 @@ export default function ReturnDetailsPage() {
                           {returnData.returnNumber}
                         </p>
                         <IoCopyOutline 
-                          className={`w-4 h-4 sm:w-5 sm:h-5 cursor-pointer transition ${copied ? 'text-green-500' : 'hover:text-[#C092BD]'}`}
+                          className={`w-4 h-4 sm:w-5 sm:h-5 cursor-pointer transition ${copied ? 'text-green-500' : 'hover:text-[#FF7700]'}`}
                           onClick={copyReturnNumber}
                         />
                       </div>
@@ -418,7 +418,7 @@ export default function ReturnDetailsPage() {
                       <div className="flex gap-1 sm:gap-2 items-center">
                         <p className="text-gray-600 text-xs sm:text-sm">{returnData.order.order_number}</p>
                         <IoCopyOutline 
-                          className="w-3 h-3 sm:w-4 sm:h-4 cursor-pointer hover:text-[#C092BD] transition"
+                          className="w-3 h-3 sm:w-4 sm:h-4 cursor-pointer hover:text-[#FF7700] transition"
                           onClick={copyOrderNumber}
                         />
                       </div>
@@ -509,7 +509,7 @@ export default function ReturnDetailsPage() {
                             </div>
                           </div>
                           <div className="text-left">
-                            <p className="font-bold text-[#C092BD]">{currencySymbol} {item.total_price.toFixed(2)}</p>
+                            <p className="font-bold text-[#FF7700]">{currencySymbol} {item.total_price.toFixed(2)}</p>
                             {item.discount_amount > 0 && (
                               <p className="text-xs text-gray-400">{t('orders.discount')}: {item.discount_amount.toFixed(2)}</p>
                             )}
@@ -535,13 +535,13 @@ export default function ReturnDetailsPage() {
                 {returnData.order.coupon_discount_amount > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-500">{t('orders.couponDiscount')}</span>
-                    <span className="font-bold text-[#C092BD]">-{currencySymbol} {returnData.order.coupon_discount_amount.toFixed(2)}</span>
+                    <span className="font-bold text-[#FF7700]">-{currencySymbol} {returnData.order.coupon_discount_amount.toFixed(2)}</span>
                   </div>
                 )}
                 {returnData.order.total_discount_amount > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-500">{t('orders.totalDiscount')}</span>
-                    <span className="font-bold text-[#C092BD]">-{currencySymbol} {returnData.order.total_discount_amount.toFixed(2)}</span>
+                    <span className="font-bold text-[#FF7700]">-{currencySymbol} {returnData.order.total_discount_amount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
@@ -556,7 +556,7 @@ export default function ReturnDetailsPage() {
                 )}
                 <div className="flex justify-between py-3 border-t border-gray-200 mt-2">
                   <span className="text-lg font-bold text-gray-800">{t('returns.totalRefund')}</span>
-                  <span className="text-xl font-bold text-[#C092BD]">{currencySymbol} {totalRefund.toFixed(2)}</span>
+                  <span className="text-xl font-bold text-[#FF7700]">{currencySymbol} {totalRefund.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -612,7 +612,7 @@ export default function ReturnDetailsPage() {
               <textarea
                 value={returnNotes || t('orders.noNotes')}
                 onChange={(e) => setReturnNotes(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-[8px] focus:outline-none focus:border-[#C092BD] resize-none bg-gray-50"
+                className="w-full p-3 border border-gray-200 rounded-[8px] focus:outline-none focus:border-[#FF7700] resize-none bg-gray-50"
                 rows={3}
                 readOnly
               />

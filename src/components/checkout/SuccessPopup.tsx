@@ -48,7 +48,7 @@ export default function SuccessPopup({
             </div>
             <h3 className="text-xl font-bold text-gray-800">{t('checkout.orderSuccess')}</h3>
             <p className="text-gray-500 text-sm mt-2">
-              {t('checkout.thankYou')} <span className="font-semibold text-[#C092BD]">{t('checkout.storeName')}</span>، 
+              {t('checkout.thankYou')} <span className="font-semibold text-[#FF7700]">{t('checkout.storeName')}</span>، 
               {t('checkout.orderPreparing')}
             </p>
           </div>
@@ -89,7 +89,7 @@ export default function SuccessPopup({
                 onClose();
                 router.push("/");
               }}
-              className="flex-1 bg-[#C092BD] text-white py-3 rounded-[8px] font-medium hover:bg-[#C092BD] transition shadow-sm"
+              className="flex-1 bg-[#FF7700] text-white py-3 rounded-[8px] font-medium hover:bg-[#FF7700] transition shadow-sm"
             >
               {t('checkout.backToHome')}
             </button>

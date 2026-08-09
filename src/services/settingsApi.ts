@@ -38,7 +38,7 @@ interface SettingsResponse {
 // ✅ إضافة معامل اللغة
 export async function getSettings(lang?: string): Promise<SettingsData> {
   try {
-    const response = await fetch(`https://education.admin.t-carts.com/api/settings`, {
+    const response = await fetch(`https://alsas.admin.t-carts.com/api/settings`, {
       method: 'GET',
       headers: getHeaders(false, lang), // ✅ تمرير اللغة
     });

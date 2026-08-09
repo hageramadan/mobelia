@@ -247,7 +247,7 @@ export function ProductCard({
       aria-labelledby={`product-name-${id}`}
       className="group w-full max-w-[340px] sm:max-w-[350px] md:max-w-[308px] lg:max-w-[308px] mx-auto h-auto relative bg-white transition-all duration-500 ease-out hover:shadow-2xl"
       style={{
-        borderRadius: '16px',
+        borderRadius: '6px',
         border: '1px solid #E4E7E9',
         padding: '0 0px 16px 0',
         overflow: 'hidden',
@@ -275,16 +275,16 @@ export function ProductCard({
             aria-pressed={localFavorite}
           >
             {isLocalMutating ? (
-              <div className="w-4 h-4 border-2 border-[#C092BD] border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-[#FF7700] border-t-transparent rounded-full animate-spin" />
             ) : (
-              <Heart className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" fill={localFavorite ? '#ef4444' : 'none'} />
+              <Heart className="h-4 w-4 sm:h-5 sm:w-5 " fill={localFavorite ? '#ef4444' : 'none'} />
             )}
           </button>
           
           {/* Best Seller Badge */}
           {isBestSeller && (
             <div className="absolute top-2 right-2 z-10">
-              <p className="text-[9px] sm:text-xs font-bold text-white bg-[#08B2A7] px-1.5 py-0.5 sm:px-2 sm:py-1 rounded">
+              <p className="text-[9px] sm:text-xs font-bold text-white bg-[#FF7700] px-1.5 py-0.5 sm:px-2 sm:py-1 rounded">
                 {t.bestSeller}
               </p>
             </div>
@@ -303,7 +303,7 @@ export function ProductCard({
           <div className="overflow-hidden rounded-t-lg">
             {!imageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-t-lg">
-                <div className="w-8 h-8 border-4 border-[#C092BD] border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-4 border-[#FF7700] border-t-transparent rounded-full animate-spin" />
               </div>
             )}
             <Image
@@ -348,7 +348,7 @@ export function ProductCard({
           <div className="flex items-center gap-2 mb-2">
             {originalPrice && originalPrice > price ? (
               <>
-                <span className="text-sm sm:text-base md:text-[17px] font-semibold" style={{ color: '#08B2A7' }}>
+                <span className="text-sm sm:text-base md:text-[17px] font-semibold" style={{ color: '#FF7700' }}>
                   {price.toLocaleString()}{' '}
                   <span className="text-[10px] sm:text-xs md:text-[12px] font-semibold">
                     {currencyLoading ? '...' : currency || 'EGP'}
@@ -359,7 +359,7 @@ export function ProductCard({
                 </span>
               </>
             ) : (
-              <span className="text-sm sm:text-base md:text-[17px] font-semibold" style={{ color: '#08B2A7' }}>
+              <span className="text-sm sm:text-base md:text-[17px] font-semibold" style={{ color: '#FF7700' }}>
                 {price.toLocaleString()}{' '}
                 <span className="text-[10px] sm:text-xs md:text-[12px] font-semibold">
                   {currencyLoading ? '...' : currency || 'EGP'}
@@ -369,7 +369,7 @@ export function ProductCard({
           </div>
           
           {/* Add to cart button */}
-          <div
+          {/* <div
             style={{
               opacity: isHovered ? 1 : 0.9,
               transition: 'opacity 0.3s ease 0.1s',
@@ -381,7 +381,7 @@ export function ProductCard({
               className={`w-full text-[11px] sm:text-[14px] md:text-[16px] font-semibold rounded-[24px] transition-all duration-300 text-white py-1.5 sm:py-2 md:py-2.5 px-4 border-2 flex items-center justify-center gap-2 hover:scale-[1.02] h-auto ${
                 isOutOfStock 
                   ? 'bg-gray-400 border-gray-400 cursor-not-allowed' 
-                  : 'bg-[#C092BD] hover:bg-[#8C6D8A] border-[#C092BD] hover:border-[#8C6D8A]'
+                  : 'bg-[#FF7700] hover:bg-[#8C6D8A] border-[#FF7700] hover:border-[#8C6D8A]'
               }`}
             >
               {isAddingToCart || cartLoading ? (
@@ -393,7 +393,7 @@ export function ProductCard({
                 </>
               )}
             </button>
-          </div>
+          </div> */}
         </div>
       </Link>
     </div>

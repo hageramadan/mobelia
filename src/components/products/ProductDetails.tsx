@@ -28,8 +28,6 @@ import toast from "react-hot-toast";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/hooks/useCurrency";
-//  إضافة واجهة العملة
-
 
 interface VariantAttribute {
   id: number;
@@ -78,8 +76,7 @@ interface ProductDetailsProps {
     variants?: ProductVariant[];
     has_variants?: boolean;
     video?: string;
-  
-    quantity?: number | null; // ✅ إضافة الكمية الرئيسية للمنتج
+    quantity?: number | null;
   };
 }
 
@@ -101,10 +98,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null,
   );
-
-  //  حالة عرض الفيديو
   const [showVideo, setShowVideo] = useState(false);
-
   const videoRef = useRef<HTMLIFrameElement>(null);
 
   const { addItem, getItemQuantity, isLoading: cartLoading } = useCartContext();
@@ -112,51 +106,49 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();
 
-  // ✅ دالة للتحقق من توفر المنتج
-  // ✅ دالة للتحقق من توفر المنتج
-const getAvailableQuantity = (): number => {
-  // إذا كان المنتج يحتوي على متغيرات
-  if (product.has_variants && product.variants && product.variants.length > 0) {
-    // إذا كان هناك متغير محدد، نأخذ الكمية من المتغير
-    if (selectedVariant) {
-      return selectedVariant.quantity ?? 0;
+  // ✅ دالة للحصول على الكمية المتاحة
+  const getAvailableQuantity = (): number => {
+    if (product.has_variants && product.variants && product.variants.length > 0) {
+      if (selectedVariant) {
+        return selectedVariant.quantity ?? 0;
+      }
+      const availableVariant = product.variants.find(v => (v.quantity ?? 0) > 0);
+      return availableVariant ? (availableVariant.quantity ?? 0) : 0;
     }
-    // إذا لم يتم اختيار متغير بعد، نبحث عن أول متغير متاح
-    const availableVariant = product.variants.find(v => (v.quantity ?? 0) > 0);
-    return availableVariant ? (availableVariant.quantity ?? 0) : 0;
-  }
-  
-  // إذا لم يكن هناك متغيرات، نأخذ الكمية من المنتج نفسه
-  return product.quantity ?? 0;
-};
+    return product.quantity ?? 0;
+  };
 
   // ✅ التحقق من أن المنتج متوفر
- // ✅ التحقق من أن المنتج متوفر
-const isProductAvailable = (): boolean => {
-  // إذا كان المنتج يحتوي على متغيرات
-  if (product.has_variants && product.variants && product.variants.length > 0) {
-    // إذا كان هناك متغير محدد، نتحقق من كميته
-    if (selectedVariant) {
-      return (selectedVariant.quantity ?? 0) > 0;
+  const isProductAvailable = (): boolean => {
+    const availableQty = getAvailableQuantity();
+    return availableQty > 0;
+  };
+
+  // ✅ الحصول على الحد الأقصى للكمية
+  const getMaxQuantity = (): number => {
+    const availableQty = getAvailableQuantity();
+    if (availableQty === 0) return 0;
+    return Math.min(availableQty, 99);
+  };
+
+  // ✅ دالة للحصول على سبب عدم التوفر مع رسائل مترجمة
+  const getUnavailabilityReason = (): string => {
+    const availableQty = getAvailableQuantity();
+    
+    // إذا كانت الكمية null أو undefined
+    if (availableQty === null || availableQty === undefined) {
+      return t("product.quantityNotDefined") || "الكمية غير محددة";
     }
-    // إذا لم يتم اختيار متغير، نتحقق من وجود أي متغير متاح
-    return product.variants.some(v => (v.quantity ?? 0) > 0);
-  }
-  
-  // إذا لم يكن هناك متغيرات، نتحقق من الكمية الرئيسية
-  return (product.quantity ?? 0) > 0;
-};
+    
+    // إذا كانت الكمية صفر
+    if (availableQty === 0) {
+      return t("product.outOfStock") || "نفذ من المخزون";
+    }
+    
+    return "";
+  };
 
-  // ✅ الحصول على الحد الأقصى للكمية
-  // ✅ الحصول على الحد الأقصى للكمية
-const getMaxQuantity = (): number => {
-  const availableQty = getAvailableQuantity();
-  // إذا كانت الكمية غير محدودة (null) أو أكبر من 99، نحدها بـ 99
-  if (availableQty === 0) return 0;
-  return Math.min(availableQty, 99);
-};
-
-  //  استخراج معرف الفيديو من رابط يوتيوب
+  // استخراج معرف الفيديو من رابط يوتيوب
   const getYouTubeVideoId = (url: string): string | null => {
     if (!url) return null;
 
@@ -189,7 +181,6 @@ const getMaxQuantity = (): number => {
     return videoId;
   };
 
-  //  الحصول على رابط تضمين الفيديو
   const getEmbedVideoUrl = (videoUrl: string): string | null => {
     const videoId = getYouTubeVideoId(videoUrl);
     if (!videoId) {
@@ -198,7 +189,6 @@ const getMaxQuantity = (): number => {
     return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&controls=1`;
   };
 
-  //  عرض الفيديو
   const showVideoPlayer = () => {
     if (!product.video) {
       toast.error(t("product.noVideo"));
@@ -207,7 +197,6 @@ const getMaxQuantity = (): number => {
     setShowVideo(true);
   };
 
-  //  إخفاء الفيديو والعودة للصورة
   const hideVideoPlayer = () => {
     setShowVideo(false);
     if (videoRef.current) {
@@ -215,12 +204,10 @@ const getMaxQuantity = (): number => {
     }
   };
 
-  //  قائمة بجميع الأسماء المحتملة لكل attribute (تدعم العربية والإنجليزية)
   const COLOR_NAMES = ["لون", "اللون", "color", "Color", "colour", "Colour"];
   const RAM_NAMES = ["الذاكرة", "RAM", "ram", "ذاكرة", "memory", "Memory"];
   const HARD_DISK_NAMES = ["هارد ديسك", "Hard disk", "hard disk", "Hard Disk", "هارد", "harddrive", "HardDrive", "storage", "Storage"];
 
-  //  دالة مساعدة لتحويل hex code إلى اسم لون
   const getColorNameFromHex = (hex: string): string => {
     const colorMap: { [key: string]: string } = {
       '#1A23A3': 'أزرق داكن',
@@ -244,7 +231,6 @@ const getMaxQuantity = (): number => {
     return colorMap[upperHex] || `لون (${hex})`;
   };
 
-  //  دالة مساعدة للحصول على اسم اللون من attribute
   const getColorDisplayName = (colorAttr: VariantAttribute): string => {
     if (colorAttr.value && colorAttr.value !== "-" && colorAttr.value !== "") {
       return colorAttr.value;
@@ -260,7 +246,6 @@ const getMaxQuantity = (): number => {
     return t("product.unknownColor");
   };
 
-  //  Extract colors from variants
   const getAvailableColorsFromVariants = (): {
     name: string;
     code: string;
@@ -305,7 +290,6 @@ const getMaxQuantity = (): number => {
     return Array.from(colorMap.values());
   };
 
-  //  Get RAM options for selected color
   const getAvailableRamForColor = (colorName: string): string[] => {
     if (!product.variants || product.variants.length === 0) {
       return [];
@@ -336,7 +320,6 @@ const getMaxQuantity = (): number => {
     return Array.from(ramOptions);
   };
 
-  //  Get Hard Disk options for selected color and RAM
   const getAvailableHardDiskForColorAndRam = (
     colorName: string,
     ramValue: string,
@@ -379,7 +362,6 @@ const getMaxQuantity = (): number => {
     return Array.from(hardDiskOptions);
   };
 
-  //  Get matching variant
   const getSelectedVariant = (
     colorName: string,
     ramValue: string,
@@ -418,7 +400,6 @@ const getMaxQuantity = (): number => {
     return variant || null;
   };
 
-  //  Get all available images
   const getAllImages = (): string[] => {
     const images: string[] = [];
 
@@ -433,7 +414,6 @@ const getMaxQuantity = (): number => {
     return [...new Map(images.map((img) => [img, img])).values()];
   };
 
-  //  Get main image
   const getMainImage = (): string => {
     const allImagesList = getAllImages();
 
@@ -455,14 +435,12 @@ const getMaxQuantity = (): number => {
       ? getAvailableHardDiskForColorAndRam(selectedColor, selectedRam)
       : [];
 
-  //  Set first available color
   useEffect(() => {
     if (availableColors.length > 0 && !selectedColor) {
       setSelectedColor(availableColors[0].name);
     }
   }, [availableColors.length]);
 
-  //  Reset RAM and Hard Disk on color change
   useEffect(() => {
     if (selectedColor) {
       const ramOptions = getAvailableRamForColor(selectedColor);
@@ -475,7 +453,6 @@ const getMaxQuantity = (): number => {
     }
   }, [selectedColor]);
 
-  //  Reset Hard Disk on RAM change
   useEffect(() => {
     if (selectedColor && selectedRam) {
       const hardDiskOptions = getAvailableHardDiskForColorAndRam(
@@ -490,7 +467,6 @@ const getMaxQuantity = (): number => {
     }
   }, [selectedRam]);
 
-  //  Update variant
   useEffect(() => {
     if (selectedColor && selectedRam && selectedHardDisk) {
       const variant = getSelectedVariant(
@@ -500,15 +476,12 @@ const getMaxQuantity = (): number => {
       );
       setSelectedVariant(variant);
       setSelectedImage(0);
-      
-      // ✅ إعادة تعيين الكمية إلى 1 عند تغيير المتغير
       setQuantity(1);
     } else {
       setSelectedVariant(null);
     }
   }, [selectedColor, selectedRam, selectedHardDisk]);
 
-  //  Current price
   const currentPrice = selectedVariant
     ? selectedVariant.price_after_discount || selectedVariant.price
     : product.price;
@@ -520,25 +493,37 @@ const getMaxQuantity = (): number => {
   const isProductFavorite = isFavorite(product.id.toString());
   const itemInCartQuantity = getItemQuantity(product.id);
 
-  // ✅ التحقق من توفر المنتج
   const availableQty = getAvailableQuantity();
   const maxQty = getMaxQuantity();
   const isAvailable = isProductAvailable();
+  const unavailabilityReason = getUnavailabilityReason();
 
-  //  الحصول على رمز العملة
   const getCurrencySymbol = (): string => {
      return currencyLoading ? '...' : (currency || 'EGP');
   };
 
-  //  Add to cart - معدلة مع التحقق من الكمية
+  // ✅ دالة إضافة للسلة مع عرض سبب واضح
   const handleAddToCart = async () => {
     if (isAddingToCart) return;
 
-    // ✅ التحقق من توفر المنتج
+    // ✅ التحقق من توفر المنتج مع عرض سبب محدد وواضح
     if (!isAvailable) {
-      toast.error(t("product.outOfStock"), {
-        duration: 3000,
+      const reason = unavailabilityReason || t("product.outOfStock") || "المنتج غير متوفر";
+      
+      // ✅ عرض رسالة توضيحية مع أيقونة
+      toast.error(`🚫 ${reason}`, {
+        duration: 5000,
         position: "top-center",
+        style: {
+          background: '#FEE2E2',
+          color: '#991B1B',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 20px',
+          borderRadius: '12px',
+          border: '1px solid #FCA5A5',
+        },
+        icon: '❌',
       });
       return;
     }
@@ -551,7 +536,6 @@ const getMaxQuantity = (): number => {
       return;
     }
 
-    // ✅ التحقق من أن الكمية المطلوبة لا تتجاوز المتاحة
     if (quantity > maxQty) {
       toast.error(t("product.notEnoughStock").replace('{max}', maxQty.toString()), {
         duration: 3000,
@@ -568,10 +552,10 @@ const getMaxQuantity = (): number => {
 
       if (success) {
         setQuantity(1);
-        // toast.success(t("product.addedToCart"), {
-        //   duration: 3000,
-        //   position: "top-center",
-        // });
+        toast.success(t("product.addedToCart"), {
+          duration: 3000,
+          position: "top-center",
+        });
       }
     } catch (error) {
       console.error("❌ Error adding to cart:", error);
@@ -596,8 +580,23 @@ const getMaxQuantity = (): number => {
     await toggleFavorite(product.id.toString(), isProductFavorite);
   };
 
-  // ✅ تحديث دالة زيادة الكمية
+  // ✅ دالة زيادة الكمية مع منع الزيادة عند null أو صفر
   const increaseQuantity = () => {
+    // ✅ منع الزيادة إذا كانت الكمية غير محددة أو صفر مع عرض سبب
+    if (!isAvailable) {
+      const reason = unavailabilityReason || t("product.outOfStock") || "المنتج غير متوفر";
+      toast.error(`⛔ ${reason}`, {
+        duration: 4000,
+        position: "top-center",
+        style: {
+          background: '#FEE2E2',
+          color: '#991B1B',
+          fontWeight: 'bold',
+        },
+      });
+      return;
+    }
+
     if (quantity < maxQty) {
       setQuantity((prev) => prev + 1);
     } else {
@@ -608,13 +607,16 @@ const getMaxQuantity = (): number => {
     }
   };
 
-  const decreaseQuantity = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
+  };
 
   const cleanImageUrl = (url: string) => {
     if (!url) return "/images/placeholder.jpg";
     if (url.startsWith("/storage")) {
-      return `https://education.admin.t-carts.com${url}`;
+      return `https://alsas.admin.t-carts.com${url}`;
     }
     return url;
   };
@@ -626,8 +628,6 @@ const getMaxQuantity = (): number => {
 
   const allImages = getAllImages();
   const mainImage = getMainImage();
-
-  //  استخراج رابط الفيديو للتضمين
   const embedVideoUrl = product.video ? getEmbedVideoUrl(product.video) : null;
 
   if (authLoading) {
@@ -644,7 +644,6 @@ const getMaxQuantity = (): number => {
 
   return (
     <div className="container-custom">
-      {/* Breadcrumb - مترجم */}
       <div className="flex gap-1 mb-2 text-base">
         <Link href="/" className="text-[#726C6C]">
           {t("products.home")}
@@ -660,10 +659,9 @@ const getMaxQuantity = (): number => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-10">
-        {/* ===== Images Section ===== */}
+        {/* Images Section */}
         <div className="space-y-1.5 col-span-2">
           <div className="relative h-[200px] md:h-[400px] lg:h-[500px] bg-[#00000033] rounded-[8px] overflow-hidden">
-            {/*  إذا كان الفيديو ظاهر، اعرض الفيديو */}
             {showVideo && embedVideoUrl ? (
               <>
                 <iframe
@@ -676,7 +674,7 @@ const getMaxQuantity = (): number => {
                 />
                 <button
                   onClick={hideVideoPlayer}
-                  className="absolute top-3  start-3 z-20 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all duration-200 border border-white/20 hover:border-white/40"
+                  className="absolute top-3 start-3 z-20 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all duration-200 border border-white/20 hover:border-white/40"
                   aria-label={t("product.closeVideo")}
                 >
                   <X className="w-4 h-4" />
@@ -702,19 +700,21 @@ const getMaxQuantity = (): number => {
                 />
 
                 {discountPercentage > 0 && (
-                  <span className="absolute top-2 right-2 bg-[#C092BD] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full z-10">
+                  <span className="absolute top-2 right-2 bg-[#FF7700] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full z-10">
                     {discountPercentage}% {t("product.discount")}
                   </span>
                 )}
 
-                {/* ✅ عرض علامة " نفذ من المخزون" إذا كانت الكمية صفر */}
-                {/* {!isAvailable && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50 rounded-t-lg">
-                    <p className="text-white text-lg font-bold bg-red-600 px-4 py-2 rounded-lg">
-                      {t("product.outOfStock")}
-                    </p>
+                {/* ✅ عرض سبب عدم التوفر على الصورة */}
+                {!isAvailable && unavailabilityReason && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
+                    <div className="text-center bg-red-600/90 px-6 py-4 rounded-xl shadow-2xl backdrop-blur-sm">
+                      <p className="text-white text-xl font-bold">
+                        {unavailabilityReason}
+                      </p>
+                    </div>
                   </div>
-                )} */}
+                )}
 
                 {product.video && embedVideoUrl && isAvailable && (
                   <button
@@ -731,7 +731,6 @@ const getMaxQuantity = (): number => {
             )}
           </div>
 
-          {/*  الصور المصغرة - تختفي عند عرض الفيديو */}
           {allImages.length > 1 && !showVideo && (
             <div className="flex gap-1.5">
               {allImages.map((image, index) => (
@@ -741,7 +740,7 @@ const getMaxQuantity = (): number => {
                   className={`
                     relative aspect-[4/3] max-h-[80px] bg-gray-100 rounded-[8px] overflow-hidden
                     border-2 transition-all duration-200
-                    ${selectedImage === index ? "border-[#C092BD]" : "border-transparent hover:border-gray-300"}
+                    ${selectedImage === index ? "border-[#FF7700]" : "border-transparent hover:border-gray-300"}
                   `}
                 >
                   <Image
@@ -757,12 +756,11 @@ const getMaxQuantity = (): number => {
             </div>
           )}
 
-          {/*  رسالة بدل الصور المصغرة عند عرض الفيديو */}
           {showVideo && (
             <div className="text-center text-sm text-gray-500 py-2">
               <button
                 onClick={hideVideoPlayer}
-                className="text-[#C092BD] hover:underline font-medium"
+                className="text-[#FF7700] hover:underline font-medium"
               >
                 {t("product.backToImages")}
               </button>
@@ -770,7 +768,7 @@ const getMaxQuantity = (): number => {
           )}
         </div>
 
-        {/* ===== Product Info ===== */}
+        {/* Product Info */}
         <div className="space-y-2 lg:space-y-5 lg:col-span-3">
           {/* Title & Price */}
           <div className="flex items-start justify-between">
@@ -784,7 +782,7 @@ const getMaxQuantity = (): number => {
             </div>
 
             <div className="flex flex-col items-end">
-              <span className="text-lg lg:text-xl font-bold text-[#C092BD] flex items-center gap-0.5">
+              <span className="text-lg lg:text-xl font-bold text-[#FF7700] flex items-center gap-0.5">
                 {currentPrice.toLocaleString()}
                 <span className="text-sm">{getCurrencySymbol()}</span>
               </span>
@@ -799,14 +797,13 @@ const getMaxQuantity = (): number => {
 
           {/* Rating */}
           <div className="flex items-center gap-1.5 lg:mt-4">
-              {product.reviewsCount > 0 && (
- <div className="flex items-center bg-[#EDF0F8] text-[#3A4980] font-bold text-xs rounded-full px-2 py-0.5 gap-1">
-              <IoChatboxEllipsesOutline className="w-3 h-3" />
-              <span>{product.reviewsCount}</span>
-              <span>{t("product.review")}</span>
-            </div>
-              )}
-           
+            {product.reviewsCount > 0 && (
+              <div className="flex items-center bg-[#EDF0F8] text-[#3A4980] font-bold text-xs rounded-full px-2 py-0.5 gap-1">
+                <IoChatboxEllipsesOutline className="w-3 h-3" />
+                <span>{product.reviewsCount}</span>
+                <span>{t("product.review")}</span>
+              </div>
+            )}
             {product.avg_rating > 0 && (
               <div className="flex items-center bg-[#FFF5F4] text-[#FA6054] font-bold text-xs rounded-full px-2 py-0.5 gap-1">
                 <FaRegStar className="w-2.5 h-2.5" />
@@ -815,7 +812,7 @@ const getMaxQuantity = (): number => {
             )}
           </div>
 
-          {/* ===== Color Selection ===== */}
+          {/* Color Selection */}
           {product.has_variants && availableColors.length > 0 && (
             <>
               <div>
@@ -849,7 +846,7 @@ const getMaxQuantity = (): number => {
             </>
           )}
 
-          {/* ===== RAM Selection ===== */}
+          {/* RAM Selection */}
           {product.has_variants && availableRam.length > 0 && (
             <div>
               <div className="flex justify-between items-center lg:mt-4">
@@ -879,7 +876,7 @@ const getMaxQuantity = (): number => {
             </div>
           )}
 
-          {/* ===== Hard Disk Selection ===== */}
+          {/* Hard Disk Selection */}
           {product.has_variants && availableHardDisk.length > 0 && (
             <div>
               <div className="flex justify-between items-center mt-2 lg:mt-4">
@@ -909,14 +906,14 @@ const getMaxQuantity = (): number => {
             </div>
           )}
 
-          {/* ===== Quantity ===== */}
+          {/* ✅ Quantity with improved controls and clear reason */}
           <div>
-            <div className="flex items-center gap-2 lg:mt-4">
-              <div className={`flex items-center rounded-full bg-[#F3F3F3] h-9 w-[110px] justify-center ${!isAvailable ? 'opacity-50' : ''}`}>
+            <div className="flex items-center gap-2 lg:mt-4 flex-wrap">
+              <div className={`flex items-center rounded-full bg-[#F3F3F3] h-9 w-[110px] justify-center ${!isAvailable ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1 || !isAvailable}
-                  className="w-6 h-6 flex items-center justify-center text-[#A3A3A3] transition disabled:cursor-not-allowed"
+                  className="w-6 h-6 flex items-center justify-center text-[#A3A3A3] transition disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <FaMinus className="w-2.5 h-2.5" />
                 </button>
@@ -925,24 +922,27 @@ const getMaxQuantity = (): number => {
                 </span>
                 <button
                   onClick={increaseQuantity}
-                  disabled={quantity >= maxQty || !isAvailable}
-                  className="w-6 h-6 flex items-center justify-center text-[#3A4980] font-bold transition disabled:cursor-not-allowed"
+                  disabled={quantity >= maxQty || !isAvailable || maxQty === 0}
+                  className="w-6 h-6 flex items-center justify-center text-[#3A4980] font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <FaPlus className="w-2.5 h-2.5 font-bold" />
                 </button>
               </div>
               
-              {/* ✅ عرض الكمية المتبقية */}
-              {isAvailable && maxQty > 0 && maxQty < 10 && (
-                <span className="text-xs text-orange-600">
-                  {t("product.onlyLeft").replace('{count}', maxQty.toString())}
-                </span>
+              {/* ✅ عرض سبب عدم التوفر بجانب الكمية بشكل واضح */}
+              {!isAvailable && unavailabilityReason && (
+                <div className="flex items-center gap-1.5 bg-red-50 border border-red-300 rounded-lg px-3 py-1.5">
+                  <span className="text-red-600 text-sm font-bold">⛔</span>
+                  <span className="text-red-600 text-sm font-bold">
+                    {unavailabilityReason}
+                  </span>
+                </div>
               )}
               
-              {/* ✅ عرض " نفذ من المخزون" */}
-              {!isAvailable && (
-                <span className="text-sm text-red-600 font-bold">
-                  {t("product.outOfStock")}
+              {/* ✅ عرض الكمية المتبقية عند التوفر */}
+              {isAvailable && maxQty > 0 && maxQty < 10 && (
+                <span className="text-xs text-orange-600 font-medium bg-orange-50 px-2 py-1 rounded-full">
+                  {t("product.onlyLeft").replace('{count}', maxQty.toString())}
                 </span>
               )}
             </div>
@@ -959,7 +959,7 @@ const getMaxQuantity = (): number => {
                 (product.has_variants && !selectedVariant)
               }
               className={`flex-1 text-sm text-white px-4 py-2 rounded-[8px] font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300
-                ${isAvailable ? 'bg-[#C092BD] hover:bg-[#C092BD]' : 'bg-gray-400 cursor-not-allowed'}
+                ${isAvailable ? 'bg-[#FF7700] hover:bg-[#e66a00]' : 'bg-gray-400 cursor-not-allowed'}
               `}
             >
               {isAddingToCart ? (
@@ -968,7 +968,15 @@ const getMaxQuantity = (): number => {
                   {t("product.adding")}
                 </>
               ) : (
-                  isAvailable ?t("product.addToCart"):t("product.outOfStock")
+                <>
+                  {!isAvailable && unavailabilityReason ? (
+                    <span className="flex items-center gap-2">
+                      <span>⛔</span> {unavailabilityReason}
+                    </span>
+                  ) : (
+                    t("product.addToCart")
+                  )}
+                </>
               )}
             </button>
 
@@ -977,17 +985,17 @@ const getMaxQuantity = (): number => {
                 onClick={handleToggleFavorite}
                 disabled={isMutating}
                 className={`
-                  flex-1 py-2 rounded-[8px] text-[#C092BD] font-bold transition-all duration-300 flex items-center justify-center gap-2 text-xs
+                  flex-1 py-2 rounded-[8px] text-[#FF7700] font-bold transition-all duration-300 flex items-center justify-center gap-2 text-xs
                   ${
                     isProductFavorite
                       ? "bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
-                      : "border border-[#C092BD] hover:bg-[#ff89e13f]"
+                      : "border border-[#FF7700] hover:bg-[#ff89e13f]"
                   }
                   disabled:opacity-50 disabled:cursor-not-allowed
                 `}
               >
                 <Heart
-                  className={`h-3.5 w-3.5 ${isProductFavorite?'text-[#ef4444]':'text-[#C092BD]'}`}
+                  className={`h-3.5 w-3.5 ${isProductFavorite?'text-[#ef4444]':'text-[#FF7700]'}`}
                   fill={isProductFavorite ? "#ef4444" : "none"}
                 />
                 {isProductFavorite ? t("product.inFavorites") : t("product.addToFavorites")}
@@ -995,7 +1003,7 @@ const getMaxQuantity = (): number => {
             </div>
           </div>
 
-          {/* Accordion */}
+          {/* Accordion with quantity info */}
           <div className="border-t border-gray-200 pt-2 space-y-1.5">
             <div>
               <button
@@ -1005,7 +1013,7 @@ const getMaxQuantity = (): number => {
                 className="flex justify-between items-center w-full py-1.5 text-right"
               >
                 <span className="font-semibold text-gray-800 flex items-center gap-1.5 text-sm">
-                  <Info className="w-3.5 h-3.5 text-[#C092BD]" />
+                  <Info className="w-3.5 h-3.5 text-[#FF7700]" />
                   {t("product.productInfo")}
                 </span>
                 <span className="text-lg">
@@ -1034,9 +1042,16 @@ const getMaxQuantity = (): number => {
                       </p>
                     </>
                   )}
-                  {/* ✅ عرض الكمية المتاحة */}
-                  <p>
-                    <strong>{t("product.availableQuantity")}:</strong> {isAvailable ? maxQty : 0}
+                  {/* ✅ عرض الكمية المتاحة مع سبب عدم التوفر */}
+                  <p className="flex items-center gap-2">
+                    <strong>{t("product.availableQuantity")}:</strong> 
+                    {isAvailable ? (
+                      <span className="text-green-600 font-bold"> {maxQty}</span>
+                    ) : (
+                      <span className="text-red-600 font-bold flex items-center gap-1">
+                        <span>⛔</span> {unavailabilityReason || t("product.outOfStock")}
+                      </span>
+                    )}
                   </p>
                 </div>
               )}

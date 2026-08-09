@@ -219,7 +219,7 @@ export default function VerifyForgotPasswordClient() {
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
                   disabled={isLoading}
-                  className="w-12 h-12 md:w-14 md:h-14 text-center text-xl font-bold border-2 border-gray-300 rounded-[8px] focus:border-[#C092BD] focus:ring-2 focus:ring-[#C092BD]/20 outline-none transition-all disabled:opacity-50"
+                  className="w-12 h-12 md:w-14 md:h-14 text-center text-xl font-bold border-2 border-gray-300 rounded-[8px] focus:border-[#FF7700] focus:ring-2 focus:ring-[#FF7700]/20 outline-none transition-all disabled:opacity-50"
                   maxLength={1}
                   dir="ltr"
                 />
@@ -230,7 +230,7 @@ export default function VerifyForgotPasswordClient() {
               {!canResend ? (
                 <p className="text-gray-500 text-sm">
                   {t("auth.didntReceiveCode")}{" "}
-                  <span className="text-[#C092BD] font-medium">
+                  <span className="text-[#FF7700] font-medium">
                     {t("auth.resendIn")} 
                     <span className="ms-1 font-bold">{timeLeft.toString().padStart(2, "0")} {t("auth.seconds")}</span>
                   </span>
@@ -240,7 +240,7 @@ export default function VerifyForgotPasswordClient() {
                   type="button"
                   onClick={handleResendCode}
                   disabled={isLoading}
-                  className="text-[#C092BD] font-medium hover:underline disabled:opacity-50"
+                  className="text-[#FF7700] font-medium hover:underline disabled:opacity-50"
                 >
                   {t("auth.resendCode")}
                 </button>
@@ -250,7 +250,7 @@ export default function VerifyForgotPasswordClient() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-[#C092BD] text-white rounded-[8px] hover:bg-[#C092BD] transition disabled:opacity-50"
+              className="w-full py-3 bg-[#FF7700] text-white rounded-[8px] hover:bg-[#FF7700] transition disabled:opacity-50"
             >
               {isLoading ? (
                 <>
